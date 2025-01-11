@@ -3,6 +3,7 @@ package com.example.school_management.student_feature.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -11,9 +12,11 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @NotBlank(message = "Name is required")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
+
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
@@ -21,10 +24,115 @@ public class Student {
 
     @NotBlank(message = "Grade is required")
     private String grade;
-
     private String address;
 
+    private String rollNo;
+
+    private String fatherName;
+    private String motherName;
+
+    @Pattern(regexp = "\\d{12}", message = "Aadhaar must be 12 digits")
+    private String aadhaarNo;
+
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
+    private String phoneNo;
+
+    private String altPhoneNo;
+
+    private String gender;
+
+    private String section;
+
+    private String sessionId;
+    private Boolean isActive;
+    // private Integer addedBy;
+
+
     // Getters and Setters
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
+
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
+
+    public String getMotherName() {
+        return motherName;
+    }
+
+    public void setMotherName(String motherName) {
+        this.motherName = motherName;
+    }
+
+    public String getAadhaarNo() {
+        return aadhaarNo;
+    }
+
+    public void setAadhaarNo(String aadhaarNo) {
+        this.aadhaarNo = aadhaarNo;
+    }
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public String getAltPhoneNo() {
+        return altPhoneNo;
+    }
+
+    public void setAltPhoneNo(String altPhoneNo) {
+        this.altPhoneNo = altPhoneNo;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+
+
+
     public Long getId() {
         return id;
     }
