@@ -7,7 +7,7 @@ const closeModalButton = document.getElementById("closeModalButton");
 const errorMessagesDiv = document.getElementById("errorMessages");
 
 // API Base URL
-const apiBaseUrl = 'http://localhost:8080/students';
+const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
 
 /** Fetch and Display Students **/
 async function fetchStudents() {
