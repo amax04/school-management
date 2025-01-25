@@ -39,6 +39,8 @@ public class TeacherServiceImpl implements TeacherService {
             existingTeacher.setSpecialization(teacherDetails.getSpecialization());
             existingTeacher.setExperience(teacherDetails.getExperience());
             existingTeacher.setEmail(teacherDetails.getEmail());
+            existingTeacher.setPhone(teacherDetails.getPhotoUrl());
+            existingTeacher.setDoj(teacherDetails.getDob());
             existingTeacher.setPhone(teacherDetails.getPhone());
             existingTeacher.setAddress(teacherDetails.getAddress());
             existingTeacher.setDoj(teacherDetails.getDoj());

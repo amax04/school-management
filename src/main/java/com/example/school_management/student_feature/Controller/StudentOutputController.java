@@ -11,6 +11,4 @@ public class StudentOutputController {
     {
         return "/student_frontend/student_index.html";
     }
-
-
 }
