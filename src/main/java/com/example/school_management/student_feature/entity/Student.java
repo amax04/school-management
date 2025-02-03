@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class Student {
+
+    public Student(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +20,7 @@ public class Student {
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
+    private String photoPath;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
@@ -49,6 +53,14 @@ public class Student {
 
 
     // Getters and Setters
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 
     public String getRollNo() {
         return rollNo;
