@@ -7,25 +7,28 @@ const closeModalButton = document.getElementById("closeModalButton");
 const errorMessagesDiv = document.getElementById("errorMessages");
 
 // API Base URL
-const apiBaseUrl = 'http://school-management-production-2040.up.railway.app/students';
-
+// const apiBaseUrl = 'http://localhost:8080/students';
+const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
 /** Fetch and Display Students **/
 async function fetchStudents() {
     try {
         const response = await fetch(apiBaseUrl);
         const students = await response.json();
-
         studentTable.innerHTML = ''; // Clear existing rows
         students.forEach(student => addStudentRow(student));
     } catch (error) {
         console.error("Error fetching students:", error);
+        alert("Failed to load students.");
     }
 }
 
 /** Add Student Row to Table **/
 function addStudentRow(student) {
     const row = document.createElement('tr');
+    const photoSrc = student.photoPath || createPlaceholder(student.name);
+
     row.innerHTML = `
+        <td><img src="${photoSrc}" alt="Photo" class="student-photo"></td>
         <td>${student.id}</td>
         <td>${student.name}</td>
         <td>${student.email}</td>
@@ -48,39 +51,105 @@ function addStudentRow(student) {
     studentTable.appendChild(row);
 }
 
+/** Generate Placeholder Image **/
+function createPlaceholder(name) {
+    const firstLetter = name[0].toUpperCase();
+    const color = stringToColor(firstLetter); // Unique color for each letter
+    const canvas = document.createElement('canvas');
+    canvas.width = 50;
+    canvas.height = 50;
+
+    const ctx = canvas.getContext('2d');
+    // Draw background
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw text (first letter)
+    ctx.fillStyle = '#FFFFFF'; // White text
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(firstLetter, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL(); // Return as data URL
+}
+
+/** Generate a Unique Color Based on Input String **/
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    // Ensure the hash is positive
+    hash = Math.abs(hash);
+
+    const color = `#${((hash >> 24) & 0xFF).toString(16).padStart(2, '0')}${((hash >> 16) & 0xFF).toString(16).padStart(2, '0')}${((hash >> 8) & 0xFF).toString(16).padStart(2, '0')}`;
+    return color.slice(0, 7); // Ensure it's a valid hex color
+}
+
 /** Add or Edit Student **/
 studentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(studentForm);
-    const studentData = Object.fromEntries(formData);
 
-    if (studentForm.dataset.mode === "edit") {
-        // Edit Student
+    // Check if it's edit mode or add mode
+    const mode = studentForm.dataset.mode;
+    if (mode === "edit") {
         const id = studentForm.dataset.id;
-        handleEditStudent(id, studentData);
+        handleEditStudent(id, formData);
     } else {
-        // Add New Student
-        try {
-            const response = await fetch(apiBaseUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(studentData),
-            });
-
-            if (response.ok) {
-                alert("Student added successfully!");
-                closeModal();
-                fetchStudents();
-            } else {
-                const error = await response.json();
-                displayErrors(errorMessagesDiv, error.errors || ["Error adding student."]);
-            }
-        } catch (error) {
-            console.error("Error adding student:", error);
-        }
+        addNewStudent(formData);
     }
 });
+
+/** Add New Student **/
+async function addNewStudent(formData) {
+    try {
+        const response = await fetch(apiBaseUrl, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert("Student added successfully!");
+            console.log("Saved Student:", result);
+            closeModal();
+            fetchStudents();
+        } else {
+            const error = await response.json();
+            alert("Error adding student: " + (error.message || "Unknown error"));
+        }
+    } catch (error) {
+        console.error("Error adding student:", error);
+        alert("Failed to add student.");
+    }
+}
+
+/** Edit Student **/
+async function handleEditStudent(id, formData) {
+    try {
+        const response = await fetch(`${apiBaseUrl}/${id}`, {
+            method: 'PUT',
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert("Student updated successfully!");
+            console.log("Updated Student:", result);
+            closeModal();
+            fetchStudents();
+        } else {
+            const error = await response.json();
+            alert("Error updating student: " + (error.message || "Unknown error"));
+        }
+    } catch (error) {
+        console.error("Error updating student:", error);
+        alert("Failed to update student.");
+    }
+}
 
 /** Delete a Student **/
 async function deleteStudent(id) {
@@ -96,6 +165,7 @@ async function deleteStudent(id) {
         }
     } catch (error) {
         console.error("Error deleting student:", error);
+        alert("Failed to delete student.");
     }
 }
 
@@ -112,6 +182,7 @@ async function openEditModal(id) {
         errorMessagesDiv.innerHTML = ""; // Clear previous errors
     } catch (error) {
         console.error("Error fetching student for editing:", error);
+        alert("Failed to open edit modal.");
     }
 }
 
@@ -135,56 +206,18 @@ function populateModalForEditing(student) {
     studentForm.dataset.id = student.id;
 }
 
-/** Handle Edit Student **/
-async function handleEditStudent(id, studentData) {
-    try {
-        const response = await fetch(`${apiBaseUrl}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(studentData),
-        });
-
-        if (response.ok) {
-            alert("Student updated successfully!");
-            closeModal();
-            fetchStudents();
-        } else {
-            const error = await response.json();
-            displayErrors(errorMessagesDiv, error.errors || ["Error updating student."]);
-        }
-    } catch (error) {
-        console.error("Error updating student:", error);
-    }
-}
-
 /** Close Modal **/
 function closeModal() {
     modal.style.display = "none";
     studentForm.reset();
-    delete studentForm.dataset.mode;
-    delete studentForm.dataset.id;
+    studentForm.dataset.mode = "add"; // Reset to add mode
 }
 
-/** Open Modal for Adding a Student **/
-openModalButton.onclick = () => {
+openModalButton.addEventListener('click', () => {
     modal.style.display = "block";
-    errorMessagesDiv.innerHTML = ""; // Clear previous errors
-};
+});
 
-/** Close Modal When Clicked Outside **/
-window.onclick = (event) => {
-    if (event.target === modal) {
-        closeModal();
-    }
-};
+closeModalButton.addEventListener('click', closeModal);
 
-/** Close Modal with Close Button **/
-closeModalButton.onclick = closeModal;
-
-/** Display Validation Errors **/
-function displayErrors(container, errors) {
-    container.innerHTML = errors.map(error => `<p>${error}</p>`).join('');
-}
-
-// Load Students on Page Load
-fetchStudents();
+// Fetch students when the page loads
+window.onload = fetchStudents;
