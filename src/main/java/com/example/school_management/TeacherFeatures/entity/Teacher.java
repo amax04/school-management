@@ -41,6 +41,7 @@ public class Teacher {
 
     @NotNull(message = "Date of Birth is required")
     @PastOrPresent(message = "Date of Birth cannot be in the future")
+    @Column(name = "dob") 
     private LocalDate dob;
 
     @Pattern(regexp = "\\d{12}", message = "Aadhaar must be 12 digits")
@@ -57,6 +58,7 @@ public class Teacher {
 
     @NotNull(message = "Date of Joining is required")
     @PastOrPresent(message = "Date of Joining cannot be in the future")
+    @Column(name = "doj") 
     private LocalDate doj;
 
     private Boolean isActive = true; // Default to true for new teachers
