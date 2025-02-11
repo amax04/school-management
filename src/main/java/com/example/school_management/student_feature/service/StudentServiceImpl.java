@@ -3,8 +3,19 @@ package com.example.school_management.student_feature.service;
 import com.example.school_management.student_feature.entity.Student;
 import com.example.school_management.student_feature.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -28,6 +39,9 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + id));
+    }
+    public Optional<Student> getStudentByIdOptional(Long id) {
+        return studentRepository.findById(id);
     }
 
     @Override
@@ -53,4 +67,67 @@ public class StudentServiceImpl implements StudentService {
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
+
+
+    public String savePhoto(MultipartFile photo) {
+        try {
+            String directory = "uploads/photos/";
+            String filename = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+
+            // Save the file to the directory
+            Path filePath = Paths.get(directory + filename);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, photo.getBytes());
+
+            // Return the web-accessible path
+            return "photos/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save photo", e);
+        }
+    }
+
+    @Override
+    public String generatePlaceholder(String name) {
+        try {
+            String firstLetter = name.substring(0, 1).toUpperCase();
+            String backgroundColor = generateRandomColor();
+
+            int width = 100;
+            int height = 100;
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = image.createGraphics();
+
+            g2d.setColor(Color.decode(backgroundColor));
+            g2d.fillRect(0, 0, width, height);
+
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 50));
+            FontMetrics fm = g2d.getFontMetrics();
+            int x = (width - fm.stringWidth(firstLetter)) / 2;
+            int y = ((height - fm.getHeight()) / 2) + fm.getAscent();
+            g2d.drawString(firstLetter, x, y);
+            g2d.dispose();
+
+            String directory = "uploads/placeholders/";
+            String filename = UUID.randomUUID() + "_placeholder.png";
+            Path filePath = Paths.get(directory + filename);
+            Files.createDirectories(filePath.getParent());
+            ImageIO.write(image, "png", filePath.toFile());
+
+            // Return the web-accessible path
+            return "placeholders/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to generate placeholder", e);
+        }
+    }
+
+    @Override
+    public String generateRandomColor() {
+        Random random = new Random();
+        int r = random.nextInt(256);
+        int g = random.nextInt(256);
+        int b = random.nextInt(256);
+        return String.format("#%02x%02x%02x", r, g, b);
+    }
+
 }
