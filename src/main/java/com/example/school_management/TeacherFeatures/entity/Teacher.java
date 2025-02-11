@@ -1,14 +1,8 @@
 package com.example.school_management.TeacherFeatures.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -16,7 +10,10 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
+@ToString
+@EqualsAndHashCode
 public class Teacher {
 
     @Id
@@ -33,23 +30,34 @@ public class Teacher {
     @Min(value = 0, message = "Experience cannot be negative")
     private Integer experience;
 
-    @Email(message = "Email should be valid")   // Validates email format
+    @Column(unique = true)
+    @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
     private String email;
 
+    @Pattern(regexp = "^(https?|ftp)://.*$", message = "Invalid URL format for photo link")
     @NotBlank(message = "Photo link should not be empty")
     private String photoUrl;
 
     @NotNull(message = "Date of Birth is required")
-    @PastOrPresent(message = "Date of Birth cannot be in the future")   // ensure that the date is not in the future.
+    @PastOrPresent(message = "Date of Birth cannot be in the future")
     private LocalDate dob;
+
+    @Pattern(regexp = "\\d{12}", message = "Aadhaar must be 12 digits")
+    private String aadhaarNo;
 
     @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
     private String phone;
+
+    private String altPhoneNo;
+
+    private String gender;
+
     private String address;
 
     @NotNull(message = "Date of Joining is required")
-    @PastOrPresent(message = "Date of Joining cannot be in the future")   // ensure that the date is not in the future.
+    @PastOrPresent(message = "Date of Joining cannot be in the future")
     private LocalDate doj;
-    private Boolean isActive; // Indicates if the teacher is active
+
+    private Boolean isActive = true; // Default to true for new teachers
 }

@@ -1,7 +1,8 @@
-package com.example.school_management.TeacherFeatures.Controller;
+package com.example.school_management.TeacherFeatures.Controller.subController;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/teachers") // Version 1 API
+@RequestMapping("/teachers") // Version 1 API
 public class TeacherController {
 
     private final TeacherRepository teacherRepository;
@@ -20,7 +21,7 @@ public class TeacherController {
 
     // Create a new teacher
     @PostMapping
-    public ResponseEntity<Teacher> addTeachers(@RequestBody Teacher teacher) {
+    public ResponseEntity<Teacher> addTeachers(@Valid @RequestBody Teacher teacher) {
         Teacher savedTeacher = teacherRepository.save(teacher);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTeacher);
     }
@@ -42,35 +43,32 @@ public class TeacherController {
 
     // Update a teacher
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @RequestBody Teacher teacherDetails) {
-        // Find the teacher by ID
-        Teacher existingTeacher = teacherRepository.findById(id).orElse(null);
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @Valid @RequestBody Teacher teacherDetails) {
+        // Find the teacher by ID or throw exception
+        Teacher existingTeacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Teacher not found with id: " + id));
 
-        // Check if the teacher exists
-        if (existingTeacher != null) {
-            // Update the teacher's details
-            existingTeacher.setName(teacherDetails.getName());
-            existingTeacher.setQualification(teacherDetails.getQualification());
-            existingTeacher.setSpecialization(teacherDetails.getSpecialization());
-            existingTeacher.setExperience(teacherDetails.getExperience());
-            existingTeacher.setEmail(teacherDetails.getEmail());
-            existingTeacher.setPhone(teacherDetails.getPhotoUrl());
-            existingTeacher.setDoj(teacherDetails.getDob());
-            existingTeacher.setPhone(teacherDetails.getPhone());
-            existingTeacher.setAddress(teacherDetails.getAddress());
-            existingTeacher.setDoj(teacherDetails.getDoj());
-            existingTeacher.setIsActive(teacherDetails.getIsActive());
+        // Update the teacher's details
+        existingTeacher.setName(teacherDetails.getName());
+        existingTeacher.setQualification(teacherDetails.getQualification());
+        existingTeacher.setSpecialization(teacherDetails.getSpecialization());
+        existingTeacher.setExperience(teacherDetails.getExperience());
+        existingTeacher.setEmail(teacherDetails.getEmail());
+        existingTeacher.setPhotoUrl(teacherDetails.getPhotoUrl());
+        existingTeacher.setDob(teacherDetails.getDob());
+        existingTeacher.setAadhaarNo(teacherDetails.getAadhaarNo());
+        existingTeacher.setPhone(teacherDetails.getPhone());
+        existingTeacher.setAltPhoneNo(teacherDetails.getAltPhoneNo());
+        existingTeacher.setGender(teacherDetails.getGender());
+        existingTeacher.setAddress(teacherDetails.getAddress());
+        existingTeacher.setDoj(teacherDetails.getDoj());
+        existingTeacher.setIsActive(teacherDetails.getIsActive());
 
-            // Save the updated teacher back to the database
-            Teacher updatedTeacher = teacherRepository.save(existingTeacher);
-
-            // Return the updated teacher in the response
-            return ResponseEntity.ok(updatedTeacher);
-        }
-
-        // If the teacher doesn't exist, return a "Not Found" response
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        // Save the updated teacher and return
+        Teacher updatedTeacher = teacherRepository.save(existingTeacher);
+        return ResponseEntity.ok(updatedTeacher);
     }
+
 
     // Delete a teacher
     @DeleteMapping("/{id}")
