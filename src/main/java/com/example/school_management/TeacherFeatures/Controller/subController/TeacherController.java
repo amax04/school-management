@@ -29,6 +29,7 @@ public class TeacherController {
     // Get all teachers
     @GetMapping
     public ResponseEntity<List<Teacher>> getAllTeachers() {
+        //Hello
         List<Teacher> teachers = teacherRepository.findAll();
         return ResponseEntity.ok(teachers);
     }
