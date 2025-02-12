@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TeacherOutputController {
 
     @GetMapping("/teacherPort")
-    public String showTeachersPage() {
-        return "teacher_frontend/teacher_index.html";
+    public String studentPortal()
+    {
+        return "teacher_frontent/teacher.html";
     }
 }
