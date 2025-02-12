@@ -1,4 +1,4 @@
-package com.example.school_management.TeacherFeatures.Controller.subController;
+package com.example.school_management.TeacherFeatures.Controller;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
