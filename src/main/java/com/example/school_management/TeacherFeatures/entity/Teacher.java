@@ -36,7 +36,6 @@ public class Teacher {
     private String email;
 
     @Pattern(regexp = "^(https?|ftp)://.*$", message = "Invalid URL format for photo link")
-    @NotBlank(message = "Photo link should not be empty")
     private String photoUrl;
 
     @NotNull(message = "Date of Birth is required")
@@ -63,3 +62,4 @@ public class Teacher {
 
     private Boolean isActive = true; // Default to true for new teachers
 }
+
