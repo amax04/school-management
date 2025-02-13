@@ -2,6 +2,7 @@ package com.example.school_management.TeacherFeatures.Controller.subController;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
+import com.example.school_management.TeacherFeatures.service.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,11 @@ public class TeacherController {
 
     private final TeacherRepository teacherRepository;
 
-    public TeacherController(TeacherRepository teacherRepository) {
+    private TeacherService teacherService;
+
+    public TeacherController(TeacherRepository teacherRepository, TeacherService teacherService) {
         this.teacherRepository = teacherRepository;
+        this.teacherService = teacherService;
     }
 
     // Create a new teacher
