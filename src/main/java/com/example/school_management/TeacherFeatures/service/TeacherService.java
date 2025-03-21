@@ -11,4 +11,7 @@ public interface TeacherService {
     void saveTeacher(Teacher teacher);
 
     void deleteTeacher(Long id);
+
+    List<Teacher> searchTeachers(String keyword);
+
 }

@@ -60,14 +60,64 @@
         text-decoration: underline;
         color: #ffeb3b;
         }
+
+        /*Additional CSS for Classic Look */
+
+        .search-form input {
+            width: 300px;
+        }
+
+        .expand-icon {
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: #007bff;
+        }
+
+        .teacher-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #007bff;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 
 <div class="container my-4">
+    <!-- Title & Search Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Teacher Management</h2>
+
+        <!-- Search Bar -->
+        <form class="d-flex search-form" action="teachers" method="get">
+            <input class="form-control rounded-pill me-2 shadow-sm" type="search" name="keyword"
+                   placeholder="Search by name, email, specialization..." aria-label="Search" value="${param.keyword}">
+            <button class="btn btn-primary rounded-pill px-3 shadow-sm" type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Teacher Table -->
     <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
+        <table class="table table-hover table-bordered shadow-sm">
+            <thead class="table-dark text-center">
             <tr>
                 <th>ID</th>
                 <th>Photo</th>
@@ -80,21 +130,20 @@
             </thead>
             <tbody>
             <c:forEach var="teacher" items="${teachers}">
-                <tr>
+                <tr class="align-middle text-center">
                     <td>${teacher.id}</td>
-                    <td class="text-center">
+                    <td>
                         <img src="${teacher.photoUrl}" class="teacher-photo"
                              onerror="setPlaceholder(this, '${teacher.name}')">
                     </td>
-                    <td>${teacher.name}</td>
+                    <td class="fw-bold">${teacher.name}</td>
                     <td>${teacher.experience} years</td>
                     <td>${teacher.phone}</td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/teachers/edit/${teacher.id}" class="text-success">
+                        <a href="${pageContext.request.contextPath}/teachers/edit/${teacher.id}" class="text-success mx-2 fs-5">
                             <i class="fas fa-edit"></i>
                         </a>
-
-                        <a href="javascript:void(0);" class="text-danger" onclick="confirmDelete(${teacher.id})">
+                        <a href="javascript:void(0);" class="text-danger fs-5" onclick="confirmDelete(${teacher.id})">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </td>
@@ -102,9 +151,9 @@
                         <i class="fas fa-chevron-down expand-icon" onclick="toggleDetails(this)"></i>
                     </td>
                 </tr>
-                <tr class="details-row" style="display: none;">
+                <tr class="details-row bg-light" style="display: none;">
                     <td colspan="7">
-                        <table class="table table-bordered">
+                        <table class="table table-borderless">
                             <tr>
                                 <th>Email</th>
                                 <td>${teacher.email}</td>
@@ -172,6 +221,21 @@
         icon.classList.toggle("fa-chevron-up");
         icon.classList.toggle("fa-chevron-down");
     }
+
+    // Show success popup if message exists
+    window.onload = function() {
+        let successMessage = "${successMessage}";
+        if (successMessage) {
+            Swal.fire({
+                title: "Success!",
+                text: successMessage,
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK"
+            });
+        }
+    };
+
 </script>
 
 </body>

@@ -3,10 +3,12 @@ package com.example.school_management.TeacherFeatures.Controller;
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -22,12 +24,27 @@ public class TeacherController {
 
     // ✅ 1. Show all teachers (for listing)
     @GetMapping("")
-    public String getAllTeachers(Model model) {
-        List<Teacher> teachers = teacherService.getAllTeachers();
+    public String getAllTeachers(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<Teacher> teachers;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            teachers = teacherService.searchTeachers(keyword);
+        } else {
+            teachers = teacherService.getAllTeachers();
+        }
+
         model.addAttribute("teachers", teachers);
-        return "teacher/teacher-index";  // This maps to index.jsp
+        model.addAttribute("keyword", keyword);  // Preserve search input in UI
+        return "teacher/teacher-index";
     }
 
+
+    @GetMapping("/api")   // for backend
+    @ResponseBody
+    public ResponseEntity<List<Teacher>> getAllTeachersApi() {
+        List<Teacher> teachers = teacherService.getAllTeachers();
+        return ResponseEntity.ok(teachers);  // Returns JSON response
+    }
     // ✅ 2. Show Add/Update Form
     @GetMapping("/form")
     public String showTeacherForm(@RequestParam(required = false) Long id, Model model) {
@@ -41,14 +58,26 @@ public class TeacherController {
     }
 
     // ✅ 3. Save (Add or Update) Teacher
+
     @PostMapping("/save")
-    public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher, BindingResult result) {
+    public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "teacher/teacher-form";  // Return to form if errors exist
         }
+
+        boolean isUpdate = (teacher.getId() != null);  // Check if it's an update
         teacherService.saveTeacher(teacher);
+
+        // Add success message
+        if (isUpdate) {
+            redirectAttributes.addFlashAttribute("successMessage", "Teacher updated successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Teacher added successfully!");
+        }
+
         return "redirect:/teachers";
     }
+
 
     // ✅ 4. Delete a Teacher
     @GetMapping("/delete/{id}")

@@ -40,4 +40,10 @@ public class TeacherServiceImpl implements TeacherService {
     public void deleteTeacher(Long id) {
         teacherRepository.deleteById(id);
     }
+
+    @Override
+    public List<Teacher> searchTeachers(String keyword) {
+        return teacherRepository.searchByKeyword(keyword);
+    }
+
 }

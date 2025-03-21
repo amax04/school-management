@@ -19,7 +19,7 @@
                 <h2 class="text-center">${teacher.id == null ? 'Add Teacher' : 'Update Teacher'}</h2>
 
             <%--@elvariable id="teacher" type="teacher"--%>
-                <form:form action="/teachers/save" method="POST" modelAttribute="teacher">
+                <form:form action="/teachers/save" method="POST" modelAttribute="teacher" enctype="multipart/form-data">
                     <form:hidden path="id"/>
                     <div class="row">
                         <div class="col-md-6 mb-3">
