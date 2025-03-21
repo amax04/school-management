@@ -4,6 +4,7 @@ import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     // ✅ 2. Get teacher by ID
-    @Override
     public Teacher getTeacherById(Long id) {
         return teacherRepository.findById(id).orElse(null);
     }
@@ -36,7 +36,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     // ✅ 4. Delete teacher by ID
-    @Override
+    @Transactional
     public void deleteTeacher(Long id) {
         teacherRepository.deleteById(id);
     }

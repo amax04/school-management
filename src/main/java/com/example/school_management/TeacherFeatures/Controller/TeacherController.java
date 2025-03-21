@@ -42,7 +42,7 @@ public class TeacherController {
 
     // ✅ 3. Save (Add or Update) Teacher
     @PostMapping("/save")
-    public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher, BindingResult result, Model model) {
+    public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher, BindingResult result) {
         if (result.hasErrors()) {
             return "teacher/teacher-form";  // Return to form if errors exist
         }
@@ -54,13 +54,17 @@ public class TeacherController {
     @GetMapping("/delete/{id}")
     public String deleteTeacher(@PathVariable Long id) {
         teacherService.deleteTeacher(id);
-        return "redirect:/teachers?deleted=true";
+        return "redirect:/teachers";
     }
 
-    // ✅ 5. Fetch All Teachers as JSON (For AG Grid)
-    @GetMapping("/all")
-    @ResponseBody
-    public List<Teacher> getAllTeachersJson() {
-        return teacherService.getAllTeachers();
+    @GetMapping("/edit/{id}")
+    public String editTeacher(@PathVariable Long id, Model model) {
+        Teacher teacher = teacherService.getTeacherById(id);
+        if (teacher == null) {
+            return "redirect:/teachers?error=notfound";
+        }
+        model.addAttribute("teacher", teacher);
+        return "teacher/teacher-form"; // This should match your JSP file name
     }
+
 }
