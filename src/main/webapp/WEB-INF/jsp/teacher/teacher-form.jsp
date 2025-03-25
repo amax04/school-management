@@ -70,11 +70,27 @@
                             <form:input path="aadhaarNo" class="form-control"/>
                             <form:errors path="aadhaarNo" class="text-danger"/>
                         </div>
+
+                        <%--   image --%>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Photo URL</label>
-                            <form:input path="photoUrl" class="form-control"/>
-<%--                            <form:errors path="photoUrl" class="text-danger"/>  <!-- ✅ Displays error message -->--%>
+                            <label class="form-label">Upload Photo</label>
+                            <input type="file" id="file" name="file" class="form-control">
                         </div>
+
+                        <!-- ✅ Hidden field to store the uploaded image path -->
+                        <form:hidden path="photoUrl"/>
+
+                        <!-- ✅ Show the existing image if available -->
+                        <c:if test="${not empty teacher.photoUrl}">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Photo</label>
+                                <div>
+                                    <img src="${pageContext.request.contextPath}${teacher.photoUrl}" alt="Teacher Photo"
+                                         class="img-thumbnail" width="150">
+                                </div>
+                            </div>
+                        </c:if>
+
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Date of Birth</label>
