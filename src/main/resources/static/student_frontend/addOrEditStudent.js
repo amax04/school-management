@@ -1,5 +1,6 @@
-const apiBaseUrl = 'http://localhost:8080/students';
+//const apiBaseUrl = 'http://localhost:8080/students';
 
+const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
 // Get student ID from URL
 const urlParams = new URLSearchParams(window.location.search);
 const studentId = urlParams.get("id");
