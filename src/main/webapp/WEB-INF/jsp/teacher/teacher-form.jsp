@@ -72,7 +72,7 @@
                         </div>
 
                         <%--   image --%>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6    mb-3">
                             <label class="form-label">Upload Photo</label>
                             <input type="file" id="file" name="file" class="form-control">
                         </div>

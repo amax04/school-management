@@ -41,13 +41,13 @@ public class TeacherController {
         return "teacher/teacher-index";
     }
 
-
     @GetMapping("/api")   // for backend
     @ResponseBody
     public ResponseEntity<List<Teacher>> getAllTeachersApi() {
         List<Teacher> teachers = teacherService.getAllTeachers();
         return ResponseEntity.ok(teachers);  // Returns JSON response
     }
+
     // ✅ 2. Show Add/Update Form
     @GetMapping("/form")
     public String showTeacherForm(@RequestParam(required = false) Long id, Model model) {
@@ -64,10 +64,14 @@ public class TeacherController {
 
     @PostMapping("/save")
     public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher,
+                              BindingResult result,
                               @RequestParam("file") MultipartFile file,
-                              BindingResult result, RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes, Model model) {
+
+        // ✅ Step 1: Check for validation errors and return to form
         if (result.hasErrors()) {
-            return "teacher/teacher-form";  // Return to form if errors exist
+            model.addAttribute("teacher", teacher); // Retain form data
+            return "teacher/teacher-form"; // Redirects back to form with errors
         }
 
         try {
@@ -76,7 +80,7 @@ public class TeacherController {
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
                 // ✅ Define the storage path
-                Path uploadDir = Paths.get("src/main/webapp/images"); // Adjust based on your setup
+                Path uploadDir = Paths.get("src/main/webapp/images");
                 if (!Files.exists(uploadDir)) {
                     Files.createDirectories(uploadDir);
                 }
@@ -92,6 +96,7 @@ public class TeacherController {
             e.printStackTrace();
         }
 
+        // ✅ Step 2: Save teacher
         teacherService.saveTeacher(teacher);
         redirectAttributes.addFlashAttribute("successMessage", "Teacher saved successfully!");
 
