@@ -71,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
 
     public String savePhoto(MultipartFile photo) {
         try {
-            String directory = "uploads/photos/";
+            String directory = "src/main/webapp/images/";
             String filename = UUID.randomUUID() + "_" + photo.getOriginalFilename();
 
             // Save the file to the directory
@@ -80,7 +80,7 @@ public class StudentServiceImpl implements StudentService {
             Files.write(filePath, photo.getBytes());
 
             // Return the web-accessible path
-            return "photos/" + filename;
+            return "/images/" + filename;
         } catch (IOException e) {
             throw new RuntimeException("Failed to save photo", e);
         }
@@ -108,7 +108,7 @@ public class StudentServiceImpl implements StudentService {
             g2d.drawString(firstLetter, x, y);
             g2d.dispose();
 
-            String directory = "uploads/placeholders/";
+            String directory = "admin/placeholders/";
             String filename = UUID.randomUUID() + "_placeholder.png";
             Path filePath = Paths.get(directory + filename);
             Files.createDirectories(filePath.getParent());

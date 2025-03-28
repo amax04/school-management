@@ -86,11 +86,6 @@ public class StudentController {
             System.out.println("updated");
         }
 
-//        if (photo != null && !photo.isEmpty()) {
-//            String newPhotoPath = studentService.savePhoto(photo);
-//            student.setPhotoPath(newPhotoPath);
-//        }
-
         Student updatedStudent = studentService.updateStudent(id, student);
         return ResponseEntity.ok(updatedStudent);
     }

@@ -1,30 +1,33 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ include file="includes/navbar.jsp" %><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Management</title>
     <link rel="stylesheet" href="/student_frontend/style.css">
+    <style>
+        .btn{
+            background-color: #0c94ff;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Student Management System</h1>
-</header>
-
 <main>
     <!-- Add New Student Button -->
-    <button id="openModalButton" class="btn">Add New Student</button>
+  <%--  <button id="openModalButton" class="btn">Add New Student</button>--%>
 
-    <!--&lt;!&ndash; Modal for Adding Student &ndash;&gt;
+    <!-- Modal for Adding Student -->
     <div id="studentModal" class="modal">
         <div class="modal-content">
             <span id="closeModalButton" class="close-btn">&times;</span>
             <h2>Add Student</h2>
 
-            &lt;!&ndash; Validation Errors &ndash;&gt;
+            <!-- Validation Errors -->
             <div id="errorMessages" style="color: red; margin-bottom: 10px;"></div>
 
-            &lt;!&ndash; Student Form &ndash;&gt;
+            <!-- Student Form -->
             <form id="studentForm" method="post" enctype="multipart/form-data" >
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required><br>
@@ -74,7 +77,7 @@
                 <label for="sessionId">Session ID:</label>
                 <input type="text" id="sessionId" name="sessionId"><br>
 
-                &lt;!&ndash; Add Photo Upload Field &ndash;&gt;
+                <!-- Add Photo Upload Field -->
                 <input type="file" name="image" id="image" accept="image/*" />
 
                 <button type="submit">Add Student</button>
@@ -82,16 +85,16 @@
         </div>
     </div>
 
-    &lt;!&ndash; Modal for Editing Student &ndash;&gt;
+    <!-- Modal for Editing Student -->
     <div id="editStudentModal" class="modal">
         <div class="modal-content">
             <span id="closeEditModalButton" class="close-btn">&times;</span>
             <h2>Edit Student</h2>
 
-            &lt;!&ndash; Validation Errors &ndash;&gt;
+            <!-- Validation Errors -->
             <div id="editErrorMessages" style="color: red; margin-bottom: 10px;"></div>
 
-            &lt;!&ndash; Student Form &ndash;&gt;
+            <!-- Student Form -->
             <form id="editStudentForm" enctype="multipart/form-data">
                 <input type="hidden" id="editStudentId" name="id">
 
@@ -151,7 +154,7 @@
             </form>
         </div>
     </div>
--->
+
     <!-- Student List Section -->
     <section class="table-section">
         <h2>Student List</h2>

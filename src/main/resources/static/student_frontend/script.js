@@ -7,8 +7,8 @@ const closeModalButton = document.getElementById("closeModalButton");
 const errorMessagesDiv = document.getElementById("errorMessages");
 
 // API Base URL
-// const apiBaseUrl = 'http://localhost:8080/students';
-const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
+//const apiBaseUrl = 'http://localhost:8080/students';
+ const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
 /** Fetch and Display Students **/
 async function fetchStudents() {
     try {
@@ -27,8 +27,9 @@ function addStudentRow(student) {
     const row = document.createElement('tr');
     const photoSrc = student.photoPath || createPlaceholder(student.name);
 
+    studentTable.appendChild(row);
     row.innerHTML = `
-        <td><img src="${photoSrc}" alt="Photo" class="student-photo"></td>
+        <td><img src="${photoSrc}" alt="Photo" class="student-photo" onerror="setPlaceholder(this, '${student.name}')"></td>
         <td>${student.id}</td>
         <td>${student.name}</td>
         <td>${student.email}</td>
@@ -48,7 +49,6 @@ function addStudentRow(student) {
             <button onclick="deleteStudent(${student.id})">Delete</button>
         </td>
     `;
-    studentTable.appendChild(row);
 }
 
 /** Generate Placeholder Image **/
@@ -126,7 +126,13 @@ async function addNewStudent(formData) {
         alert("Failed to add student.");
     }
 }
-
+            async function setPlaceholder(imgElement, name) {
+                let firstLetter = name.charAt(0).toUpperCase();
+                let placeholder = document.createElement("div");
+                placeholder.className = "student-photo";
+                placeholder.textContent = firstLetter;
+                imgElement.replaceWith(placeholder);
+            }
 /** Edit Student **/
 async function handleEditStudent(id, formData) {
     try {
@@ -170,7 +176,7 @@ async function deleteStudent(id) {
 }
 
 /** Open Edit Modal **/
-async function openEditModal(id) {
+/*async function openEditModal(id) {
     try {
         const response = await fetch(`${apiBaseUrl}/${id}`);
         if (!response.ok) throw new Error("Student not found.");
@@ -184,7 +190,21 @@ async function openEditModal(id) {
         console.error("Error fetching student for editing:", error);
         alert("Failed to open edit modal.");
     }
+}*/
+async function openEditModal(id) {
+	window.location.href = `addoreditstudent?id=${id}`;
+	/* try {
+        const response = await fetch(`${apiBaseUrl}/${id}`);
+        if (!response.ok) throw new Error("Student not found.");
+
+        // Redirect to the Add/Edit page with student ID in query param
+        window.location.href = `addOrEditStudent.jsp?id=${id}`;
+    } catch (error) {
+        console.error("Error fetching student for editing:", error);
+        alert("Failed to open edit form.");
+    }*/
 }
+
 
 /** Populate Modal for Editing **/
 function populateModalForEditing(student) {
@@ -206,6 +226,8 @@ function populateModalForEditing(student) {
     studentForm.dataset.id = student.id;
 }
 
+
+
 /** Close Modal **/
 function closeModal() {
     modal.style.display = "none";
@@ -214,7 +236,7 @@ function closeModal() {
 }
 
 openModalButton.addEventListener('click', () => {
-    modal.style.display = "block";
+    modal.style.display = "none";
 });
 
 closeModalButton.addEventListener('click', closeModal);
