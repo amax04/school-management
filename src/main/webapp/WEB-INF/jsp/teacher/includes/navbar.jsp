@@ -74,8 +74,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="teachers">
-                        <i class="fas fa-user-tie"></i> Teachers
+                    <a class="nav-link" href="${pageContext.request.contextPath}/teacher/student-attendance/view">
+                        <i class="fas fa-user-graduate"></i> Student Attendance
                     </a>
                 </li>
                 <li class="nav-item">

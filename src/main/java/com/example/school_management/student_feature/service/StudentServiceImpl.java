@@ -35,6 +35,30 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
+    // student Attendance part
+    @Override
+    public List<Student> getStudentsByGradeAndSection(String grade, String section) {
+        List<Student> students = studentRepository.findByGradeAndSection(grade, section);
+
+        // Debugging
+        System.out.println("Fetched students for Grade: " + grade + ", Section: " + section);
+        students.forEach(student -> System.out.println(student.getName()));
+
+        return students;
+    }
+
+    // student Attendance
+    @Override
+    public List<String> getAllGrades() {                            // Student Attandance
+        return studentRepository.findDistinctGrades();
+    }
+
+    // student Attendance
+    @Override
+    public List<String> getAllSections() {              // Student Attandance
+        return studentRepository.findDistinctSections();
+    }
+
     @Override
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)

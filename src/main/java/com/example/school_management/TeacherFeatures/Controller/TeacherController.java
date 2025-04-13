@@ -2,6 +2,7 @@ package com.example.school_management.TeacherFeatures.Controller;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -118,6 +119,25 @@ public class TeacherController {
         }
         model.addAttribute("teacher", teacher);
         return "teacher/teacher-form"; // This should match your JSP file name
+    }
+
+    @GetMapping("/teacherDashboard")
+    public String teacherDashboard(@RequestParam("id") long teacherId, HttpSession session) {
+        System.out.println("===> /teachers/teacherDashboard called with ID: " + teacherId);
+        Teacher teacher = teacherService.getTeacherById(teacherId);
+
+        if (teacher != null) {
+            session.setAttribute("teacherId", teacher.getId());
+            session.setAttribute("teacherName", teacher.getName());
+            session.setAttribute("teacherPhoto", teacher.getPhotoUrl());
+        }
+
+        return "redirect:/teachers/dashboard";  // This is a redirect to a GET endpoint
+    }
+
+    @GetMapping("/dashboard")
+    public String showDashboard() {
+        return "teacher/teacherDashboard"; // This maps to /WEB-INF/views/teacher/teacherDashboard.jsp
     }
 
 }
