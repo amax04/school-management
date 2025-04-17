@@ -228,6 +228,7 @@
 </head>
 <body>
 <%@ include file="sidebar.jsp" %>
+
 <div id="main-content">
     <!-- Top Bar -->
     <div class="top-bar fade-in">
@@ -262,10 +263,10 @@
     <!-- Quick Actions -->
     <h3 class="fade-in">Quick Actions</h3>
     <div class="quick-actions fade-in">
-        <div class="action float-hover">Mark Attendance</div>
-        <div class="action float-hover">View Records</div>
-        <div class="action float-hover">Manage Profile</div>
-        <div class="action float-hover">Logout</div>
+        <div class="action float-hover" onclick="location.href='/attendance/mark'">Mark Attendance</div>
+        <div class="action float-hover" onclick="location.href='/attendance/records'">View Records</div>
+        <div class="action float-hover" onclick="location.href='/teacher/profile'">Manage Profile</div>
+        <div class="action float-hover" onclick="location.href='/logout'">Logout</div>
     </div>
 </div>
 

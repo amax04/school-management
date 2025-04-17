@@ -1,5 +1,6 @@
 package com.example.school_management.TeacherFeatures.entity;
 
+import com.example.school_management.student_feature.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,11 @@ public class StudentAttendance {
     private String recordedBy;
 
     private Long studentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentId", insertable = false, updatable = false)
+    private Student student;
+
     private LocalDate date;
     private String status; // Present, Absent, Leave
 

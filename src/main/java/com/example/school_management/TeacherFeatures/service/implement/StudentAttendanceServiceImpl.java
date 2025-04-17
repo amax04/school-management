@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentAttendanceServiceImpl implements StudentAttendanceService {
@@ -22,7 +23,7 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
     private AttendanceMetaRepository attendanceMetaRepository;
 
     @Override
-    public void saveAttendance(AttendanceRequest request, Long teacherId) {
+    public void saveAttendance(AttendanceRequest request, Long teacherId, String recordedBy) {
         // ✅ First, save attendance metadata
         AttendanceMeta meta = new AttendanceMeta(
                 request.getDate(),
@@ -44,6 +45,7 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
                 studentAttendance.setGrade(request.getGrade());
                 studentAttendance.setSection(request.getSection());
                 studentAttendance.setTeacherId(teacherId);
+                studentAttendance.setRecordedBy(recordedBy);
                 studentAttendance.setAttendanceMeta(meta); // ✅ Now meta is available
                 studentAttendanceRepository.save(studentAttendance);
             }
@@ -51,7 +53,6 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
             System.out.println("No student attendance entries found. Skipping studentAttendance save.");
         }
     }
-
 
     @Override
     public boolean existsByDateGradeSectionTeacher(LocalDate date, String grade, String section, Long teacherId) {
@@ -69,8 +70,7 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
             request.setSection(meta.getSection());
             request.setTeacherId(meta.getTeacherId());
 
-            // ✅ Fetch student attendance records
-            List<StudentAttendance> studentAttendanceList = studentAttendanceRepository.findByAttendanceMeta(meta);
+            List<StudentAttendance> studentAttendanceList = studentAttendanceRepository.findByAttendanceMetaWithStudent(meta);
 
             // ✅ Convert to AttendanceEntry DTOs
             List<AttendanceRequest.AttendanceEntry> entryList = studentAttendanceList.stream().map(att -> {
@@ -84,6 +84,17 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
             return request;
         }).toList();
+    }
+
+    @Override
+    public List<AttendanceMeta> getFilteredHistory(Long teacherId, String grade, String section, LocalDate date) {
+        List<AttendanceMeta> allRecords = attendanceMetaRepository.findByTeacherId(teacherId);
+
+        return allRecords.stream()
+                .filter(meta -> grade == null || meta.getGrade().equalsIgnoreCase(grade))
+                .filter(meta -> section == null || meta.getSection().equalsIgnoreCase(section))
+                .filter(meta -> date == null || meta.getDate().equals(date))
+                .collect(Collectors.toList());
     }
 
 }

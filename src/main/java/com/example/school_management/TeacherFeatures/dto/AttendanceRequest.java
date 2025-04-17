@@ -54,7 +54,7 @@ public class AttendanceRequest {
     }
 
     public void setAttendancelist(List<AttendanceEntry> attendance) {
-        this.attendancelist = attendancelist;
+        this.attendancelist = attendance;
     }
 
     @Override

@@ -431,11 +431,11 @@
             <i class="fas fa-users"></i><span>Students</span>
         </a>
 
-        <a href="<%= request.getContextPath() %>/teacher/student-attendance/view" class="nav-button">
+        <a href="<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>" class="nav-button">
             <i class="fas fa-check-square"></i><span>Attendance</span>
         </a>
 
-        <a href="<%= request.getContextPath() %>/teacher/student-attendance/attendance-history" class="nav-button">
+        <a href="<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history?teacherId=<%= session.getAttribute("teacherId") %>" class="nav-button">
             <i class="fas fa-calendar-alt"></i><span>Attendance History</span>
         </a>
 

@@ -1,6 +1,10 @@
 package com.example.school_management.TeacherFeatures.Controller;
 
 import com.example.school_management.TeacherFeatures.dto.AttendanceRequest;
+import com.example.school_management.TeacherFeatures.entity.AttendanceMeta;
+import com.example.school_management.TeacherFeatures.entity.StudentAttendance;
+import com.example.school_management.TeacherFeatures.repository.AttendanceMetaRepository;
+import com.example.school_management.TeacherFeatures.repository.StudentAttendanceRepository;
 import com.example.school_management.TeacherFeatures.service.StudentAttendanceService;
 import com.example.school_management.student_feature.entity.Student;
 import com.example.school_management.student_feature.service.StudentService;
@@ -25,8 +29,22 @@ import java.util.List;
         @Autowired
         private StudentService studentService;
 
+        @Autowired
+        private AttendanceMetaRepository attendanceMetaRepository;
+
+        @Autowired
+        private StudentAttendanceRepository studentAttendanceRepository;
+
+        @Autowired
+        private StudentAttendanceService studentAttendanceService;
+
         @GetMapping("/view")
-        public String showAttendancePage() {
+        public String showAttendancePage(@ModelAttribute AttendanceRequest request, HttpSession session) {
+            if (request.getTeacherId() == null) {
+                request.setTeacherId((Long) session.getAttribute("teacherId"));
+            }
+
+            System.out.println("Teacher ID: " + request.getTeacherId());
             return "teacher/student-Attendance/studentMarkAttendance"; // This will load studentMarkAttendance.jsp
         }
 
@@ -71,20 +89,48 @@ import java.util.List;
 
         @PostMapping("/submit-attendance")
         public ResponseEntity<?> submitAttendance(@RequestBody AttendanceRequest request, HttpSession session) {
-            Long teacherId = (Long) session.getAttribute("id");
-            request.setTeacherId(teacherId); // set it into request for downstream use
+            Long teacherId = (Long) session.getAttribute("teacherId");
+            String teacherName = (String) session.getAttribute("teacherName"); // ✅ Get from session
 
+            request.setTeacherId(teacherId); // Set teacherId into request for downstream use
+
+            // ✅ Prevent duplicate attendance entry
             if (attendanceService.existsByDateGradeSectionTeacher(
                     request.getDate(),
                     request.getGrade(),
                     request.getSection(),
-                    request.getTeacherId())) {
+                    teacherId)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Attendance already taken");
             }
 
-            attendanceService.saveAttendance(request, teacherId);
+            // ✅ Create and save metadata
+            AttendanceMeta attendanceMeta = new AttendanceMeta();
+            attendanceMeta.setDate(request.getDate());
+            attendanceMeta.setGrade(request.getGrade());
+            attendanceMeta.setSection(request.getSection());
+            attendanceMeta.setTeacherId(teacherId);
+            attendanceMeta = attendanceMetaRepository.save(attendanceMeta);
+
+            // ✅ Save student attendance records
+            for (AttendanceRequest.AttendanceEntry entry : request.getAttendancelist()) {
+                StudentAttendance studentAttendance = new StudentAttendance();
+                studentAttendance.setStudentId(entry.getStudentId());
+                studentAttendance.setStatus(entry.getStatus());
+                studentAttendance.setDate(request.getDate());
+                studentAttendance.setTeacherId(teacherId);
+                studentAttendance.setGrade(request.getGrade());
+                studentAttendance.setSection(request.getSection());
+                studentAttendance.setAttendanceMeta(attendanceMeta);
+
+                // ✅ Set recordedBy
+                studentAttendance.setRecordedBy(teacherName);
+
+                studentAttendanceRepository.save(studentAttendance);
+            }
+
             return ResponseEntity.ok("Attendance submitted successfully");
         }
+
 
         @GetMapping("/check-exists")
         public ResponseEntity<Boolean> checkAttendanceExists(
@@ -98,14 +144,21 @@ import java.util.List;
             return ResponseEntity.ok(exists);
         }
 
-        @GetMapping("/attendance-history")
-        public String getAttendanceHistory(HttpSession session, Model model) {
-            Long teacherId = (Long) session.getAttribute("id");
-            List<AttendanceRequest> history = attendanceService.getAttendanceHistoryByTeacher(teacherId);
-            model.addAttribute("history", history);
-            System.out.println("Teacher ID: " + teacherId);
-            System.out.println("Attendance history: " + history);
-            return "teacher/student-Attendance/studentAttendanceHistory";
-        }
+        @RequestMapping("/student-attendance-history")
+        public String showAttendanceHistory(@RequestParam("teacherId") Long teacherId, HttpSession session, Model model) {
+            session.setAttribute("teacherId", teacherId);
 
+            System.out.println("Fetching history for Teacher ID: " + teacherId);
+
+            List<AttendanceRequest> history = studentAttendanceService.getAttendanceHistoryByTeacher(teacherId);
+
+            if (history == null || history.isEmpty()) {
+                System.out.println("No history found for teacher ID " + teacherId);
+            } else {
+                System.out.println("History size: " + history.size());
+            }
+
+            model.addAttribute("history", history);
+            return "/teacher/student-Attendance/studentAttendanceHistory";
+        }
     }

@@ -69,6 +69,8 @@
 <div class="container">
     <h2>📋 Student Attendance</h2>
 
+    <p class="debug">Teacher ID from Session: <%= session.getAttribute("teacherId") %></p>
+
     <div class="row">
         <div class="col-md-4">
             <label class="form-label">Grade:</label>
@@ -91,7 +93,7 @@
     <div class="mt-4 d-flex flex-wrap gap-2">
         <button class="btn btn-info text-white" id="load-students">Load Students</button>
         <button class="btn btn-success" id="mark-all-present">Mark All Present</button>
-        <a href="/teacher/student-attendance/attendance-history" class="btn btn-outline-primary">📅 View Past Attendance</a>
+        <a href="<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history?teacherId=<%= session.getAttribute("teacherId") %>" class="btn btn-outline-primary">📅 View Past Attendance</a>
         <input type="text" id="search" placeholder="Search by name..." class="form-control w-100 w-md-auto">
     </div>
 
@@ -106,6 +108,7 @@
         <tbody id="student-list"></tbody>
     </table>
 
+    <input type="hidden" name="teacherId" value="<%= session.getAttribute("teacherId") %>" />
     <button class="btn btn-primary mt-3" id="submit-attendance">Submit Attendance</button>
 </div>
 
