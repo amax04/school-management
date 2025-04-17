@@ -1,6 +1,6 @@
 package com.example.school_management.TeacherFeatures.entity;
 
-import com.example.school_management.student_feature.entity.Student;
+import com.example.school_management.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
