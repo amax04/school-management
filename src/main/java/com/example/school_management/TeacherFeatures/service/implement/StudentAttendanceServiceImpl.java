@@ -5,7 +5,9 @@ import com.example.school_management.TeacherFeatures.entity.AttendanceMeta;
 import com.example.school_management.TeacherFeatures.entity.StudentAttendance;
 import com.example.school_management.TeacherFeatures.repository.StudentAttendanceRepository;
 import com.example.school_management.TeacherFeatures.repository.AttendanceMetaRepository;
+import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
 import com.example.school_management.TeacherFeatures.service.StudentAttendanceService;
+import com.example.school_management.TeacherFeatures.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +97,35 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
                 .filter(meta -> section == null || meta.getSection().equalsIgnoreCase(section))
                 .filter(meta -> date == null || meta.getDate().equals(date))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getTodaysAttendancePercentage(Long teacherId) {
+        LocalDate today = LocalDate.now();
+        int presentCount = studentAttendanceRepository.countByTeacherIdAndDateAndStatus(teacherId, today, "Present");
+        int totalMarked = studentAttendanceRepository.countByTeacherIdAndDate(teacherId, today);
+
+        if (totalMarked == 0) return 0.0;
+        return (presentCount * 100.0) / totalMarked;
+    }
+
+    @Override
+    public int getTotalStudentsAssignedToTeacher(Long teacherId) {
+        return studentAttendanceRepository.countDistinctStudentsByTeacherId(teacherId);
+    }
+
+    @Override
+    public int getTotalClassesAssignedToTeacher(Long teacherId) {
+        return attendanceMetaRepository.countDistinctClassesByTeacherId(teacherId);
+    }
+
+    @Override
+    public double getOverallAttendanceRate(Long teacherId) {
+        int totalPresent = studentAttendanceRepository.countByTeacherIdAndStatus(teacherId, "Present");
+        int totalMarked = studentAttendanceRepository.countByTeacherId(teacherId);
+
+        if (totalMarked == 0) return 0.0;
+        return (totalPresent * 100.0) / totalMarked;
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.school_management.TeacherFeatures.Controller;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
+import com.example.school_management.TeacherFeatures.service.StudentAttendanceService;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -27,6 +28,9 @@ public class TeacherController {
 
     @Autowired
     private TeacherRepository teacherRepository;
+
+    @Autowired
+    private StudentAttendanceService studentAttendanceService;
 
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
@@ -107,7 +111,7 @@ public class TeacherController {
         teacherService.saveTeacher(teacher);
         redirectAttributes.addFlashAttribute("successMessage", "Teacher saved successfully!");
 
-        return "redirect:/teachers";
+        return "redirect:/teachers/teacher-profile";
     }
 
     // ✅ 4. Delete a Teacher
@@ -128,31 +132,58 @@ public class TeacherController {
     }
 
     @GetMapping("/dashboard")
-    public String teacherDashboard(HttpSession session, Principal principal) {
+    public String teacherDashboard(HttpSession session, Principal principal, Model model) {
         System.out.println("Dashboard method-------------");
+
         if (principal == null) {
             return "redirect:/login";
         }
+
         System.out.println("Principal pass method-------------");
 
-        Long id= (Long) session.getAttribute("roleId");
+        Long teacherId = (Long) session.getAttribute("roleId"); // Assuming roleId is the teacher's ID
         String username = principal.getName(); // e.g., teacher's username
-        Teacher teacher = teacherRepository.findById(id).orElse(null);
+        Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
 
         if (teacher != null) {
-            //session.setAttribute("roleId", teacher.getId());
             session.setAttribute("teacherId", teacher.getId());
             session.setAttribute("teacherName", teacher.getName());
             session.setAttribute("teacherPhoto", teacher.getPhotoUrl());
+
+            // Fetch data using the StudentAttendanceService methods
+            int totalStudents = studentAttendanceService.getTotalStudentsAssignedToTeacher(teacher.getId());
+            int totalClasses = studentAttendanceService.getTotalClassesAssignedToTeacher(teacher.getId());
+            double todaysAttendancePercentage = studentAttendanceService.getTodaysAttendancePercentage(teacher.getId());
+            double overallAttendanceRate = studentAttendanceService.getOverallAttendanceRate(teacher.getId());
+
+            // Set the fetched data in the model to be accessed in the JSP
+            model.addAttribute("todaysAttendance", todaysAttendancePercentage);
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("classesAssigned", totalClasses);
+            model.addAttribute("attendanceRate", overallAttendanceRate);
         }
-        System.out.println("this is the teacher Id:"+id);
+
+        System.out.println("Teacher ID: " + teacherId);
         return "teacher/teacherDashboard";
     }
 
+    @GetMapping("/teacher-profile")
+    public String getTeacherProfile(HttpSession session, Model model) {
+        Long teacherId = (Long) session.getAttribute("teacherId");
 
-//    @GetMapping("/dashboard")
-//    public String showDashboard() {
-//        return "teacher/teacherDashboard"; // This maps to /WEB-INF/views/teacher/teacherDashboard.jsp
-//    }
+        // Fetch teacher details from the database using the teacherId
+        Teacher teacher = teacherService.getTeacherById(teacherId);
 
+        if (teacher != null) {
+            // Add teacher object to the model if teacher exists
+            model.addAttribute("teacher", teacher);
+        } else {
+            // Optionally, you can return an error page if the teacher is not found
+            model.addAttribute("errorMessage", "Teacher not found.");
+            return "error";  // You can define an error.jsp page to handle this
+        }
+
+        // Return the teacher profile page
+        return "teacher/teacherProfile";  // Return the name of the JSP page
+    }
 }

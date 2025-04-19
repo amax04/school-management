@@ -244,29 +244,37 @@
     <div class="cards">
         <div class="card bg-blue fade-in float-hover" style="animation-delay: 0.1s;">
             <h4>Today's Attendance</h4>
-            <p>--%</p>
+            <p>${todaysAttendance}%</p> <!-- Displays Today's Attendance Percentage -->
         </div>
         <div class="card bg-green fade-in float-hover" style="animation-delay: 0.2s;">
             <h4>Total Students</h4>
-            <p>--</p>
+            <p>${totalStudents}</p> <!-- Displays Total Students -->
         </div>
         <div class="card bg-orange fade-in float-hover" style="animation-delay: 0.3s;">
             <h4>Classes Assigned</h4>
-            <p>--</p>
+            <p>${classesAssigned}</p> <!-- Displays Classes Assigned -->
         </div>
         <div class="card bg-purple fade-in float-hover" style="animation-delay: 0.4s;">
             <h4>Attendance Rate</h4>
-            <p>85%</p>
+            <p>${attendanceRate}%</p> <!-- Displays Overall Attendance Rate -->
         </div>
     </div>
 
     <!-- Quick Actions -->
     <h3 class="fade-in">Quick Actions</h3>
     <div class="quick-actions fade-in">
-        <div class="action float-hover" onclick="location.href='/attendance/mark'">Mark Attendance</div>
-        <div class="action float-hover" onclick="location.href='/attendance/records'">View Records</div>
-        <div class="action float-hover" onclick="location.href='/teacher/profile'">Manage Profile</div>
-        <div class="action float-hover" onclick="location.href='/logout'">Logout</div>
+        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>'">
+            Mark Attendance
+        </div>
+<%--        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history'">--%>
+<%--            View Records--%>
+<%--        </div>--%>
+        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teachers/teacher-profile'">
+            Manage Profile
+        </div>
+        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/logout'">
+            Logout
+        </div>
     </div>
 </div>
 

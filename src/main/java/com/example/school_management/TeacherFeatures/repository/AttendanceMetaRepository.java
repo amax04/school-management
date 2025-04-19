@@ -24,4 +24,7 @@ public interface AttendanceMetaRepository extends JpaRepository<AttendanceMeta, 
                                        @Param("section") String section,
                                        @Param("date") LocalDate date);
 
+    @Query(value = "SELECT COUNT(DISTINCT am.grade || '-' || am.section) FROM attendance_meta am WHERE am.teacher_id = :teacherId", nativeQuery = true)
+    int countDistinctClassesByTeacherId(@Param("teacherId") Long teacherId);
+
 }

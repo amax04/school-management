@@ -429,20 +429,24 @@
             <i class="fas fa-home"></i><span>Dashboard</span>
         </a>
 
-        <a href="<%= request.getContextPath() %>/teachers" class="nav-button">
-            <i class="fas fa-users"></i><span>Students</span>
-        </a>
+<%--        <a href="<%= request.getContextPath() %>/teachers" class="nav-button">--%>
+<%--            <i class="fas fa-users"></i><span>Students</span>--%>
+<%--        </a>--%>
 
         <a href="<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>" class="nav-button">
             <i class="fas fa-check-square"></i><span>Attendance</span>
         </a>
 
-        <a href="/teacher/student-attendance/student-attendance-history" class="nav-button">
-            <i class="fas fa-calendar-alt"></i><span>Attendance History</span>
+<%--        <a href="/teacher/student-attendance/student-attendance-history" class="nav-button">--%>
+<%--            <i class="fas fa-calendar-alt"></i><span>Attendance History</span>--%>
+<%--        </a>--%>
+
+        <a href="<%= request.getContextPath() %>/teachers/teacher-profile" class="nav-button">
+            <i class="fas fa-user-tie"></i><span>About me</span>
         </a>
 
-        <a href="<%= request.getContextPath() %>/teachers/form?id=<%= session.getAttribute("id") %>" class="nav-button">
-            <i class="fas fa-user-tie"></i><span>About me</span>
+        <a href="/logout" class="nav-button">
+            <i class="fas fa-sign-out-alt"></i><span>Logout</span>
         </a>
 
     </div>
@@ -466,7 +470,7 @@
         </div>
 
         <div id="nav-footer-content">
-            <a href="logout?teacherId=<%= teacherId %>" class="nav-button log-out">
+            <a href="/logout" class="nav-button log-out">
                 <i class="fas fa-sign-out-alt"></i><span>Logout</span>
             </a>
         </div>

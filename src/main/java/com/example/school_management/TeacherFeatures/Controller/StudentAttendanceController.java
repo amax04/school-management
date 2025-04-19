@@ -28,7 +28,7 @@ import java.util.List;
     public class StudentAttendanceController {
 
         @Autowired
-        private StudentAttendanceService attendanceService;
+        private StudentAttendanceService attendanceService; // Use the interface here
 
         @Autowired
         private StudentService studentService;
@@ -38,9 +38,6 @@ import java.util.List;
 
         @Autowired
         private StudentAttendanceRepository studentAttendanceRepository;
-
-        @Autowired
-        private StudentAttendanceService studentAttendanceService;
 
         @Autowired
         private TeacherRepository teacherRepository;
@@ -168,11 +165,11 @@ import java.util.List;
 
             if (teacherId == null) {
                 model.addAttribute("error", "Unable to identify teacher.");
-                return "error"; // or your custom error page
+                return "login/login"; // or your custom error page
             }
 
-            List<AttendanceRequest> history = studentAttendanceService.getAttendanceHistoryByTeacher(teacherId);
+            List<AttendanceRequest> history = attendanceService.getAttendanceHistoryByTeacher(teacherId);
             model.addAttribute("history", history);
-            return "/teacher/student/studentAttendanceHistory";
+            return "teacher/student/studentAttendanceHistory";
         }
     }
