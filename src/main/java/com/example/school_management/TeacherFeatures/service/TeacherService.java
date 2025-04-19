@@ -5,4 +5,13 @@ import java.util.List;
 
 public interface TeacherService {
     List<Teacher> getAllTeachers();
+
+    Teacher getTeacherById(Long id);
+
+    void saveTeacher(Teacher teacher);
+
+    void deleteTeacher(Long id);
+
+    List<Teacher> searchTeachers(String keyword);
+
 }

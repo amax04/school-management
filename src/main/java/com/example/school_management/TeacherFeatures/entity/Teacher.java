@@ -1,5 +1,6 @@
 package com.example.school_management.TeacherFeatures.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -8,8 +9,8 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@NoArgsConstructor  // This will generate the default no-argument constructor
-@AllArgsConstructor // This will generate an all-argument constructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Teacher {
 
@@ -39,12 +40,12 @@ public class Teacher {
     @NotBlank(message = "Address is required")
     private String address;
 
-    @Pattern(regexp = "^(https?|ftp)://.*$", message = "Invalid URL format for photo link")
+//    @Pattern(regexp = "^(https?|ftp)://.*|^/.*$", message = "Invalid URL format for photo link")
+//    @Size(max = 255, message = "Photo URL must not exceed 255 characters")
     private String photoUrl;
 
     @NotNull(message = "Date of Birth is required")
     @PastOrPresent(message = "Date of Birth cannot be in the future")
-    @Column(name = "dob") 
     private LocalDate dob;
 
     @NotBlank(message = "Phone is required")
@@ -62,9 +63,7 @@ public class Teacher {
 
     @NotNull(message = "Date of Joining is required")
     @PastOrPresent(message = "Date of Joining cannot be in the future")
-    @Column(name = "doj") 
     private LocalDate doj;
 
-    private Boolean isActive = true; // Default to true for new teachers
+    private Boolean isActive = true;
 }
-

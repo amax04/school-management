@@ -1,129 +1,126 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Teacher</title>
+    <title>${teacher.id == null ? 'Add Teacher' : 'Update Teacher'}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-<div class="container mt-1">
+<div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-15 col-lg-13"> <!-- Increased width -->
-            <div class="card shadow-sm rounded p-4">
-                <h2 class="text-center text-dark mb-2">Add Teacher</h2>
+        <div class="col-md-10">
+            <div class="card shadow p-4">
+                <h2 class="text-center">${teacher.id == null ? 'Add Teacher' : 'Update Teacher'}</h2>
 
-                <form action="/teachers/teacher/add" method="POST" enctype="multipart/form-data" th:object="${teacher}">
-
-                    <!-- ERROR MESSAGES -->
-                    <div class="text-danger" th:if="${#fields.hasErrors('*')}">
-                        <ul th:each="error : ${#fields.errors('*')}">
-                            <li th:text="${error}"></li>
-                        </ul>
-                    </div>
-
+            <%--@elvariable id="teacher" type="teacher"--%>
+                <form:form action="/teachers/save" method="POST" modelAttribute="teacher" enctype="multipart/form-data">
+                    <form:hidden path="id"/>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name">
-                                <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')}"></div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Name</label>
+                            <form:input path="name" class="form-control"/>
+                            <form:errors path="name" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email">
-                                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')}"></div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <form:input path="email" class="form-control"/>
+                            <form:errors path="email" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="qualification" class="form-label">Qualification</label>
-                                <input type="text" class="form-control" id="qualification" name="qualification">
-                                <div class="text-danger" th:if="${#fields.hasErrors('qualification')}" th:text="${#fields.errors('qualification')}"></div>
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Qualification</label>
+                            <form:input path="qualification" class="form-control"/>
+                            <form:errors path="qualification" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="specialization" class="form-label">Specialization</label>
-                                <input type="text" class="form-control" id="specialization" name="specialization">
-                                <div class="text-danger" th:if="${#fields.hasErrors('specialization')}" th:text="${#fields.errors('specialization')}"></div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Specialization</label>
+                            <form:input path="specialization" class="form-control"/>
+                            <form:errors path="specialization" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="experience" class="form-label">Experience</label>
-                                <input type="text" class="form-control" id="experience" name="experience">
-                                <div class="text-danger" th:if="${#fields.hasErrors('experience')}" th:text="${#fields.errors('experience')}"></div>
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Experience</label>
+                            <form:input path="experience" class="form-control" type="number"/>
+                            <form:errors path="experience" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" name="address">
-                                <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:text="${#fields.errors('address')}"></div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Address</label>
+                            <form:input path="address" class="form-control"/>
+                            <form:errors path="address" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="dob" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="dob" name="dob">
-                                <div class="text-danger" th:if="${#fields.hasErrors('dob')}" th:text="${#fields.errors('dob')}"></div>
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <form:input path="phone" class="form-control"/>
+                            <form:errors path="phone" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="phone" class="form-label">Phone No</label>
-                                <input type="text" class="form-control" id="phone" name="phone">
-                                <div class="text-danger" th:if="${#fields.hasErrors('phone')}" th:text="${#fields.errors('phone')}"></div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Alternate Phone (Optional)</label>
+                            <form:input path="altPhoneNo" class="form-control"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="altPhoneNo" class="form-label">Another Phone No</label>
-                                <input type="text" class="form-control" id="altPhoneNo" name="altPhoneNo">
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Aadhaar Number</label>
+                            <form:input path="aadhaarNo" class="form-control"/>
+                            <form:errors path="aadhaarNo" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="gender" class="form-label">Gender</label>
-                                <select id="gender" class="form-select" name="gender">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <div class="text-danger" th:if="${#fields.hasErrors('gender')}" th:text="${#fields.errors('gender')}"></div>
-                            </div>
+
+                        <%--   image --%>
+                        <div class="col-md-6    mb-3">
+                            <label class="form-label">Upload Photo</label>
+                            <input type="file" id="file" name="file" class="form-control">
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="doj" class="form-label">Date of Joining</label>
-                                <input type="date" class="form-control" id="doj" name="doj">
-                                <div class="text-danger" th:if="${#fields.hasErrors('doj')}" th:text="${#fields.errors('doj')}"></div>
+
+                        <!-- ✅ Hidden field to store the uploaded image path -->
+                        <form:hidden path="photoUrl"/>
+
+                        <!-- ✅ Show the existing image if available -->
+                        <c:if test="${not empty teacher.photoUrl}">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Photo</label>
+                                <div>
+                                    <img src="${pageContext.request.contextPath}${teacher.photoUrl}" alt="Teacher Photo"
+                                         class="img-thumbnail" width="150">
+                                </div>
                             </div>
+                        </c:if>
+
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            <form:input path="dob" type="date" class="form-control" value="${teacher.dob}"/>
+                            <form:errors path="dob" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="photoUrl" class="form-label">Photo Url</label>
-                                <input type="file" class="form-control" id="photoUrl" name="photoUrl" accept="image/*">
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Joining</label>
+                            <form:input path="doj" type="date" class="form-control" value="${teacher.doj}"/>
+                            <form:errors path="doj" class="text-danger"/>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <label for="isActive" class="form-label">Active Status</label>
-                                <select class="form-select" id="isActive" name="isActive">
-                                    <option value="true">Active</option>
-                                    <option value="false">Inactive</option>
-                                </select>
-                            </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gender</label>
+                            <form:select path="gender" class="form-select">
+                                <form:option value="Male">Male</form:option>
+                                <form:option value="Female">Female</form:option>
+                                <form:option value="Other">Other</form:option>
+                            </form:select>
+                            <form:errors path="gender" class="text-danger"/>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Active Status</label>
+                            <form:checkbox path="isActive" class="form-check-input"/>
                         </div>
                     </div>
-                    <div class="text-center mt-2">
-                        <button type="submit" class="btn btn-success px-5 py-3">Submit</button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success px-5 py-2">${teacher.id == null ? 'Add' : 'Update'}</button>
                     </div>
-                </form>
+                </form:form>
             </div>
         </div>
     </div>

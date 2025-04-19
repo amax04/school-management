@@ -69,17 +69,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="home.jsp">
+                    <a class="nav-link active" href="teachers">
                         <i class="fas fa-home"></i> Home
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="teachers">
-                        <i class="fas fa-user-tie"></i> Teachers
+                    <a class="nav-link" href="${pageContext.request.contextPath}/teacher/student-attendance/view">
+                        <i class="fas fa-user-graduate"></i> Student Attendance
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="addTeacher.jsp">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/teachers/form">
                         <i class="fas fa-user-plus"></i> Add Teacher
                     </a>
                 </li>
