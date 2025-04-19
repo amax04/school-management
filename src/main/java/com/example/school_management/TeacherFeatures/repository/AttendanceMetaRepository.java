@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface AttendanceMetaRepository extends JpaRepository<AttendanceMeta, Long> {
     boolean existsByDateAndGradeAndSectionAndTeacherId(LocalDate date, String grade, String section, Long teacherId);
+
+    boolean existsByDateAndGradeAndSection(LocalDate date, String grade, String section);
+
     List<AttendanceMeta> findByTeacherId(Long teacherId);
 
     @Query("SELECT a FROM AttendanceMeta a WHERE a.teacherId = :teacherId " +
@@ -24,4 +27,6 @@ public interface AttendanceMetaRepository extends JpaRepository<AttendanceMeta, 
                                        @Param("section") String section,
                                        @Param("date") LocalDate date);
 
+    @Query("SELECT a FROM AttendanceMeta a ORDER BY a.date DESC")
+    List<AttendanceMeta> findAllAttendanceMeta();
 }

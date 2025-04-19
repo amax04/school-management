@@ -17,4 +17,10 @@ public interface StudentAttendanceRepository extends JpaRepository<StudentAttend
     @Query("SELECT sa FROM StudentAttendance sa JOIN FETCH sa.student WHERE sa.attendanceMeta = :meta")
     List<StudentAttendance> findByAttendanceMetaWithStudent(@Param("meta") AttendanceMeta attendanceMeta);
 
+
+    boolean existsByAttendanceMetaDateAndAttendanceMetaGradeAndAttendanceMetaSection(LocalDate date, String grade, String section);
+
+
+    List<StudentAttendance> findByAttendanceMeta(AttendanceMeta attendanceMeta);
+
 }

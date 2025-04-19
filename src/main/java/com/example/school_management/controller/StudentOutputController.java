@@ -2,9 +2,11 @@ package com.example.school_management.controller;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
+import com.example.school_management.entity.DashboardStatsDTO;
 import com.example.school_management.entity.Student;
 import com.example.school_management.entity.Subject;
 import com.example.school_management.entity.UserCreationRequestDTO;
+import com.example.school_management.service.DashboardService;
 import com.example.school_management.service.StudentService;
 import com.example.school_management.service.SubjectAssignmentService;
 import com.example.school_management.service.SubjectService;
@@ -44,13 +46,17 @@ public class StudentOutputController {
     @Autowired
     private UserRegistrationService userRegService;
 
+
+    @Autowired
+    private DashboardService dashboardService;
+
     @GetMapping("/dashboard")
     public String adminDashboard(Model model) {
-       // model.addAttribute("studentCount", studentService.getAllStudents());
-       // model.addAttribute("teacherCount", teacherService.getAllTeachers());
-        //model.addAttribute("presentToday", attendanceService.getTodayPresentCount());
-       // model.addAttribute("totalStudentsToday", studentService.getAllStudents()); // or based on class
+        DashboardStatsDTO stats = dashboardService.getDashboardStats();
+        List<Student> students = dashboardService.getAllStudents();
 
+        model.addAttribute("stats", stats);
+        model.addAttribute("students", students);
         return "admin/admin_dashboard";
     }
 
@@ -152,7 +158,7 @@ public class StudentOutputController {
     @GetMapping("/addoreditstudent")
     public String saveOrEditStudent()
     {
-        return "/student/addOrEditStudent";
+        return "admin/addOrEditStudent";
     }
 
 //    @GetMapping("/assign-subjects")
