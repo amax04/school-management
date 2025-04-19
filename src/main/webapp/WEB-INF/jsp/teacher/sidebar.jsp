@@ -1,14 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%
-    long teacherId = (long) session.getAttribute("teacherId");
+    Long teacherId = (Long) session.getAttribute("roleId");
+    if (teacherId == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
 
     String teacherPhoto = (String) session.getAttribute("teacherPhoto");
     String teacherName = (String) session.getAttribute("teacherName");
-
-    System.out.println("Photo from session: " + teacherPhoto);
-    System.out.println("Name from session: " + teacherName);
 %>
 
 <style>
@@ -435,7 +437,7 @@
             <i class="fas fa-check-square"></i><span>Attendance</span>
         </a>
 
-        <a href="<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history?teacherId=<%= session.getAttribute("teacherId") %>" class="nav-button">
+        <a href="/teacher/student-attendance/student-attendance-history" class="nav-button">
             <i class="fas fa-calendar-alt"></i><span>Attendance History</span>
         </a>
 

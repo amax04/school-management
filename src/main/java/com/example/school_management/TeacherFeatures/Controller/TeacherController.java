@@ -1,9 +1,11 @@
 package com.example.school_management.TeacherFeatures.Controller;
 
 import com.example.school_management.TeacherFeatures.entity.Teacher;
+import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.*;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class TeacherController {
 
     private final TeacherService teacherService;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
 
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
@@ -121,23 +127,32 @@ public class TeacherController {
         return "teacher/teacher-form"; // This should match your JSP file name
     }
 
-    @GetMapping("/teacherDashboard")
-    public String teacherDashboard(@RequestParam("id") long teacherId, HttpSession session) {
-        System.out.println("===> /teachers/teacherDashboard called with ID: " + teacherId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+    @GetMapping("/dashboard")
+    public String teacherDashboard(HttpSession session, Principal principal) {
+        System.out.println("Dashboard method-------------");
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        System.out.println("Principal pass method-------------");
+
+        Long id= (Long) session.getAttribute("roleId");
+        String username = principal.getName(); // e.g., teacher's username
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
 
         if (teacher != null) {
+            //session.setAttribute("roleId", teacher.getId());
             session.setAttribute("teacherId", teacher.getId());
             session.setAttribute("teacherName", teacher.getName());
             session.setAttribute("teacherPhoto", teacher.getPhotoUrl());
         }
-
-        return "redirect:/teachers/dashboard";  // This is a redirect to a GET endpoint
+        System.out.println("this is the teacher Id:"+id);
+        return "teacher/teacherDashboard";
     }
 
-    @GetMapping("/dashboard")
-    public String showDashboard() {
-        return "teacher/teacherDashboard"; // This maps to /WEB-INF/views/teacher/teacherDashboard.jsp
-    }
+
+//    @GetMapping("/dashboard")
+//    public String showDashboard() {
+//        return "teacher/teacherDashboard"; // This maps to /WEB-INF/views/teacher/teacherDashboard.jsp
+//    }
 
 }

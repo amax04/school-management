@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page isELIgnored="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%
+    long teacherId = (long) session.getAttribute("teacherId");
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,7 +75,7 @@
 <div class="container">
     <h2>📋 Student Attendance</h2>
 
-    <p class="debug">Teacher ID from Session: <%= session.getAttribute("teacherId") %></p>
+    <input type="hidden" id="teacherId" value="<%= teacherId %>" />
 
     <div class="row">
         <div class="col-md-4">
@@ -93,7 +99,7 @@
     <div class="mt-4 d-flex flex-wrap gap-2">
         <button class="btn btn-info text-white" id="load-students">Load Students</button>
         <button class="btn btn-success" id="mark-all-present">Mark All Present</button>
-        <a href="<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history?teacherId=<%= session.getAttribute("teacherId") %>" class="btn btn-outline-primary">📅 View Past Attendance</a>
+        <a href="/teacher/student-attendance/student-attendance-history" class="btn btn-outline-primary">📅 View Past Attendance</a>
         <input type="text" id="search" placeholder="Search by name..." class="form-control w-100 w-md-auto">
     </div>
 
@@ -108,13 +114,14 @@
         <tbody id="student-list"></tbody>
     </table>
 
-    <input type="hidden" name="teacherId" value="<%= session.getAttribute("teacherId") %>" />
     <button class="btn btn-primary mt-3" id="submit-attendance">Submit Attendance</button>
 </div>
 
 <div id="toast-message" class="toast"></div>
 
 <script>
+    const teacherId = document.getElementById("teacherId").value;
+
     document.addEventListener("DOMContentLoaded", () => {
         fetchGradesAndSections();
         document.getElementById("load-students").addEventListener("click", fetchStudents);
@@ -209,6 +216,7 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                teacherId: teacherId,
                 date: date,
                 grade: grade,
                 section: section,
@@ -243,25 +251,6 @@
             row.style.display = row.innerText.toLowerCase().includes(keyword) ? "" : "none";
         });
     }
-
-    function checkAttendanceExists() {
-        const grade = document.getElementById("grade").value;
-        const section = document.getElementById("section").value;
-        const date = document.getElementById("date").value;
-
-        fetch(`/teacher/student-attendance/check-exists?grade=${grade}&section=${section}&date=${date}`)
-            .then(res => res.json())
-            .then(exists => {
-                if (exists) {
-                    alert("Attendance already submitted for this class today.");
-                    document.getElementById("submit-attendance").disabled = true;
-                } else {
-                    document.getElementById("submit-attendance").disabled = false;
-                    fetchStudents(); // or allow normal flow
-                }
-            });
-    }
-
 </script>
 
 </body>

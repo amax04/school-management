@@ -3,8 +3,10 @@ package com.example.school_management.TeacherFeatures.Controller;
 import com.example.school_management.TeacherFeatures.dto.AttendanceRequest;
 import com.example.school_management.TeacherFeatures.entity.AttendanceMeta;
 import com.example.school_management.TeacherFeatures.entity.StudentAttendance;
+import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.AttendanceMetaRepository;
 import com.example.school_management.TeacherFeatures.repository.StudentAttendanceRepository;
+import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
 import com.example.school_management.TeacherFeatures.service.StudentAttendanceService;
 import com.example.school_management.entity.Student;
 import com.example.school_management.service.StudentService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,6 +41,9 @@ import java.util.List;
 
         @Autowired
         private StudentAttendanceService studentAttendanceService;
+
+        @Autowired
+        private TeacherRepository teacherRepository;
 
         @GetMapping("/view")
         public String showAttendancePage(@ModelAttribute AttendanceRequest request, HttpSession session) {
@@ -80,7 +86,7 @@ import java.util.List;
 
         @GetMapping("/attendance-exists")
         @ResponseBody
-        public boolean attendanceAlreadyExists(@RequestParam LocalDate  date,
+        public boolean attendanceAlreadyExists(@RequestParam("date") LocalDate date,
                                                @RequestParam String grade,
                                                @RequestParam String section,
                                                HttpSession session) {
@@ -137,7 +143,7 @@ import java.util.List;
         public ResponseEntity<Boolean> checkAttendanceExists(
                 @RequestParam String grade,
                 @RequestParam String section,
-                @RequestParam LocalDate date,
+                @RequestParam("date") LocalDate date,
                 HttpSession session) {
 
             Long teacherId = (Long) session.getAttribute("id");
@@ -145,21 +151,28 @@ import java.util.List;
             return ResponseEntity.ok(exists);
         }
 
-        @RequestMapping("/student-attendance-history")
-        public String showAttendanceHistory(@RequestParam("teacherId") Long teacherId, HttpSession session, Model model) {
-            session.setAttribute("teacherId", teacherId);
+        @GetMapping("/student-attendance-history")
+        public String showAttendanceHistory(HttpSession session, Principal principal, Model model) {
+            Long teacherId = (Long) session.getAttribute("roleId");
 
-            System.out.println("Fetching history for Teacher ID: " + teacherId);
-
-            List<AttendanceRequest> history = studentAttendanceService.getAttendanceHistoryByTeacher(teacherId);
-
-            if (history == null || history.isEmpty()) {
-                System.out.println("No history found for teacher ID " + teacherId);
-            } else {
-                System.out.println("History size: " + history.size());
+            // Optionally get from Principal if needed
+            if (teacherId == null && principal != null) {
+                String username = principal.getName();
+                // Assuming you have a method to get teacher by username:
+                Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+                if (teacher != null) {
+                    teacherId = teacher.getId();
+                    session.setAttribute("teacherId", teacherId);
+                }
             }
 
+            if (teacherId == null) {
+                model.addAttribute("error", "Unable to identify teacher.");
+                return "error"; // or your custom error page
+            }
+
+            List<AttendanceRequest> history = studentAttendanceService.getAttendanceHistoryByTeacher(teacherId);
             model.addAttribute("history", history);
-            return "/teacher/student-Attendance/studentAttendanceHistory";
+            return "/teacher/student/studentAttendanceHistory";
         }
     }

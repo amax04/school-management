@@ -43,14 +43,18 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         if (userDetails.isMustChangePassword()) {
             response.sendRedirect("/change-password");
         } else {
+            System.out.println("Else case-----------------");
             switch (role) {
                 case "ROLE_ADMIN":
+                    System.out.println("Admin case Pass-----------------");
                     response.sendRedirect("/admin/dashboard");
                     break;
                 case "ROLE_TEACHER":
+                    System.out.println("Teacher case Pass-----------------");
                     response.sendRedirect("/teachers/dashboard");
                     break;
                 case "ROLE_STUDENT":
+                    System.out.println("Student case Pass-----------------");
                     response.sendRedirect("/student/dashboard");
                     break;
                 default:
