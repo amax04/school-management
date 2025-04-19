@@ -1,20 +1,19 @@
 const apiBaseUrl = 'http://localhost:8080/students';
+// const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
 
-//const apiBaseUrl = 'https://school-management-production-2040.up.railway.app/students';
-// Get student ID from URL
 const urlParams = new URLSearchParams(window.location.search);
 const studentId = urlParams.get("id");
 
-// Fetch student details if updating
+// Fetch existing student data if editing
 async function fetchStudentDetails() {
-    if (!studentId) return; // No ID means it's an Add operation
+    if (!studentId) return;
 
     try {
         const response = await fetch(`${apiBaseUrl}/${studentId}`);
         if (!response.ok) throw new Error("Student not found.");
+
         const student = await response.json();
 
-        // Populate form fields
         document.getElementById("formTitle").innerText = "Edit Student";
         document.getElementById("studentId").value = student.id;
         document.getElementById("gender").value = student.gender;
@@ -35,24 +34,25 @@ async function fetchStudentDetails() {
     }
 }
 
-// Handle form submission
+// Handle form submit
 document.getElementById('studentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
+
+    const form = e.target;
+    const formData = new FormData(form);
 
     const isUpdating = !!document.getElementById("studentId").value;
     const apiUrl = isUpdating ? `${apiBaseUrl}/${studentId}` : apiBaseUrl;
-    const method = isUpdating ? "PUT" : "POST";
 
     try {
         const response = await fetch(apiUrl, {
-            method: method,
-            body: formData,
+            method: "POST", // Use POST even for updates
+            body: formData
         });
 
         if (response.ok) {
             alert(isUpdating ? "Student updated successfully!" : "Student added successfully!");
-            window.location.href = "/admin/students"; // Redirect to main page
+            window.location.href = "student/profile"; // ✅ Make sure this is correct URL
         } else {
             alert("Error saving student.");
         }

@@ -21,7 +21,7 @@
 
 <!-- Main Content -->
 <main class="ml-64 p-6">
-    <h1 class="text-3xl font-bold text-blue-600">Welcome, <%= role %> ${student.name}!</h1>
+    <h1 class="text-3xl font-bold text-blue-600">Welcome, <%--<%= role %>--%> ${student.name}!</h1>
 
 
 
@@ -29,11 +29,13 @@
     <section class="bg-white p-6 mt-6 shadow-lg rounded-lg">
         <h2 class="text-xl font-semibold text-green-600 mb-4">Your Profile</h2>
         <div class="flex items-center space-x-4">
-            <img src="/student_images/default.jpg" class="w-16 h-16 rounded-full shadow">
+            <div class="w-24 h-24 rounded-full overflow-hidden border shadow">
+                <img src="${student.photoPath != null ? student.photoPath : '/images/default_avatar.png'}"
+                     alt="Student Photo" class="w-full h-full object-cover">
+            </div>
             <div>
-                <p class="text-lg font-semibold">John Doe</p>
+                <p class="text-lg font-semibold">${student.name}</p>
                 <p class="text-gray-600">ID: <%=roleId%></p>
-                <h2>Welcome, ${student.name}</h2>
                 <p>Email: ${student.email}</p>
                 <p>Grade: ${student.grade} ${student.section}</p>
 

@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,15 +114,15 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="glass-card">
                 <h2 class="text-lg">🧑‍🎓 Students</h2>
-                <p class="text-4xl font-bold glow-text" id="studentCount">0</p>
+                <p class="text-4xl font-bold glow-text" id="studentCount">${stats.studentCount}</p>
             </div>
             <div class="glass-card">
                 <h2 class="text-lg">👩‍🏫 Teachers</h2>
-                <p class="text-4xl font-bold glow-text" id="teacherCount">0</p>
+                <p class="text-4xl font-bold glow-text" id="teacherCount">${stats.teacherCount}</p>
             </div>
             <div class="glass-card">
                 <h2 class="text-lg">📅 Attendance Rate</h2>
-                <p class="text-4xl font-bold glow-text" id="attendanceRate">0%</p>
+                <p class="text-4xl font-bold glow-text" id="attendanceRate">${stats.attendanceRate}</p>
             </div>
             <div class="glass-card">
                 <h2 class="text-lg">💡 Active Modules</h2>
@@ -179,28 +181,60 @@
             { headerName: "Attendance", field: "attendance" }
         ];
 
-        const rowData = [
-            { id: 1, name: "Aman Saxena", grade: "A", attendance: "95%" },
-            { id: 2, name: "Rajat Saxena", grade: "B+", attendance: "88%" },
-            { id: 3, name: "Anshu Verma", grade: "A-", attendance: "92%" }
-        ];
+        // const rowData = [
+        //     { id: 1, name: "Aman Saxena", grade: "A", attendance: "95%" },
+        //     { id: 2, name: "Rajat Saxena", grade: "B+", attendance: "88%" },
+        //     { id: 3, name: "Anshu Verma", grade: "A-", attendance: "92%" }
+        // ];
 
+        const rowData = [
+            <c:forEach var="student" items="${students}" varStatus="loop">
+            {
+                id: ${student.id},
+                name: "${student.name}",
+                grade: "${student.grade}",
+                <%--attendance: "${student.attendanceRate}"--%>
+            }<c:if test="${!loop.last}">,</c:if>
+            </c:forEach>
+        ];
         const gridOptions = {
-            columnDefs: columnDefs,
+            columnDefs: [
+                { headerName: "ID", field: "id" },
+                { headerName: "Name", field: "name" },
+                { headerName: "Grade", field: "grade" },
+                { headerName: "Attendance", field: "attendance" }
+            ],
             rowData: rowData,
             pagination: true,
-            animateRows: true,
+            paginationPageSize: 10,
             defaultColDef: {
-                flex: 1,
-                minWidth: 100,
-                sortable: true,
-                filter: true,
-                resizable: true
-            }
+                        flex: 1,
+                        minWidth: 100,
+                        sortable: true,
+                        filter: true,
+                        resizable: true
+                    }
         };
 
-        const gridDiv = document.getElementById("myGrid");
-        new agGrid.Grid(gridDiv, gridOptions); // ✅ Correct usage for ag-Grid Community
+        const gridDiv = document.querySelector('#myGrid');
+        new agGrid.Grid(gridDiv, gridOptions);
+
+        // const gridOptions = {
+        //     columnDefs: columnDefs,
+        //     rowData: rowData,
+        //     pagination: true,
+        //     animateRows: true,
+        //     defaultColDef: {
+        //         flex: 1,
+        //         minWidth: 100,
+        //         sortable: true,
+        //         filter: true,
+        //         resizable: true
+        //     }
+        // };
+        //
+        // const gridDiv = document.getElementById("myGrid");
+        // new agGrid.Grid(gridDiv, gridOptions); // ✅ Correct usage for ag-Grid Community
 
         // ✅ Chart.js Setup
         const ctx = document.getElementById('gradeChart').getContext('2d');
@@ -233,9 +267,9 @@
                 }]
             }
         });
-        document.getElementById('studentCount').textContent = rowData.length;
-        document.getElementById('teacherCount').textContent = 10;
-        document.getElementById('attendanceRate').textContent = "91%";
+        //document.getElementById('studentCount').textContent = rowData.length;
+       // document.getElementById('teacherCount').textContent = 10;
+        //document.getElementById('attendanceRate').textContent = "91%";
 
     });
         // Simulated stats

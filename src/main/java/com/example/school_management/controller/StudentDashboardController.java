@@ -1,6 +1,7 @@
 package com.example.school_management.controller;
 
 import com.example.school_management.entity.Student;
+import com.example.school_management.entity.StudentDTO;
 import com.example.school_management.entity.Subject;
 import com.example.school_management.repository.StudentRepository;
 import com.example.school_management.service.StudentService;
@@ -9,11 +10,16 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RequestMapping("/student")
 @Controller
@@ -59,45 +65,6 @@ public class StudentDashboardController {
         model.addAttribute("student", student);
         return "student/profile";
     }
-    // Load student dashboard with student details
-//    @GetMapping("/student/dashboard")
-//    public String showStudentDashboard(@SessionAttribute("studentId") Long studentId, Model model) {
-//        Optional<Student> student = Optional.ofNullable(studentService.getStudentById(studentId));
-//        if (student.isPresent()) {
-//            model.addAttribute("student", student.get());
-//            return "student/student_dashboard"; // This refers to student_dashboard.jsp
-//        }
-//        return "redirect:/login"; // Redirect if student not found
-//    }
-//    @GetMapping("/student/dashboard")
-//    public String showStudentDashboard(Model model) {
-//        // Get the authenticated student username (assume email is the username)
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String studentEmail = authentication.getName(); // Get logged-in student's email
-//
-//        // Fetch student details
-//        Student student = studentService.getStudentByEmail(studentEmail);
-//        if (student == null) {
-//            return "redirect:/login"; // If student not found, redirect to login
-//        }
-//
-//        // Fetch subjects
-//        List<Subject> subjects = subjectService.getSubjectsByStudentId(student.getId());
-//
-//        // Fetch attendance
-//        Attendance attendance = attendanceService.getAttendanceByStudentId(student.getId());
-//
-//        // Fetch grades
-//        List<Grade> grades = gradeService.getGradesByStudentId(student.getId());
-//
-//        // Add data to the model
-//        model.addAttribute("student", student);
-//        model.addAttribute("subjects", subjects);
-//        model.addAttribute("attendance", attendance);
-//        model.addAttribute("grades", grades);
-//
-//        return "student_dashboard"; // Return JSP page
-//    }
 
     @GetMapping("/subjects")
     public String studentSubjects(Model model, HttpSession session) {
@@ -126,5 +93,58 @@ public class StudentDashboardController {
 
         return "student/subject_list";
     }
+
+    @GetMapping("/edit")
+    public String showEditForm(@RequestParam("id") Long studentId, Model model, HttpSession session) {
+        if (studentId == null) {
+            return "redirect:/login";
+        }
+
+        Student student = studentService.getStudentById(studentId);
+        model.addAttribute("student", student);
+
+        return "student/edit_profile"; // JSP file name
+    }
+
+/*
+
+    @PostMapping("/update")
+    public String updateStudentFromDashboard(@ModelAttribute Student student,
+                                             @RequestParam("image") MultipartFile image,
+                                             HttpSession session,
+                                             RedirectAttributes redirectAttributes) {
+        Long studentId = (Long) session.getAttribute("roleId");
+        if (studentId == null) {
+            return "redirect:/login";
+        }
+
+        //student.setId(studentId); // Ensure the correct ID is used
+
+        try {
+            if (!image.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+                Path uploadPath = Paths.get("src/main/webapp/images");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(image.getInputStream(), filePath);
+
+                student.setPhotoPath("/images/" + fileName);
+            }
+
+            studentService.updateStudent(studentId,student); // Make sure this method exists
+            redirectAttributes.addFlashAttribute("success", "Profile updated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Failed to update profile.");
+        }
+
+        return "redirect:/student-dashboard";
+    }
+*/
 
 }

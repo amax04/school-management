@@ -17,18 +17,19 @@
             StudentSys</h1>
     </div>
     <ul id="menuItems" class="space-y-4 font-medium text-gray-700 mt-8 transition-all duration-300">
-        <li>  <a href="dashboard" class="sidebar-text">Dashboard</a></li>
-        <li> <a href="students" class="sidebar-text">Student Management</a></li>
+        <li>  <a href="/admin/dashboard" class="sidebar-text">Dashboard</a></li>
+        <li> <a href="/admin/students" class="sidebar-text">Student Management</a></li>
         <li>
-            <a href="teachers" class="flex items-center space-x-2 hover:text-blue-600">
+            <a href="/admin/teachers" class="flex items-center space-x-2 hover:text-blue-600">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Manage Teachers</span>
             </a>
         </li>
-        <li> <a href="assign-subjects" class="sidebar-text">Assign Subjects</a></li>
-        <li><span class="sidebar-text"> Attendance</span></li>
+        <li> <a href="/admin/assign-subjects" class="sidebar-text">Assign Subjects</a></li>
+        <li><a href="/admin/student-attendance/view" class="sidebar-text">Attendence</a></li>
         <li><span class="sidebar-text"> Reports</span></li>
         <li><span class="sidebar-text">Settings</span></li>
+        <li><a href="/logout">Logout</a></li>
     </ul>
 </div>
 
