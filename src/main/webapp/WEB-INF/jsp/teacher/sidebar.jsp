@@ -437,9 +437,9 @@
             <i class="fas fa-check-square"></i><span>Attendance</span>
         </a>
 
-<%--        <a href="/teacher/student-attendance/student-attendance-history" class="nav-button">--%>
-<%--            <i class="fas fa-calendar-alt"></i><span>Attendance History</span>--%>
-<%--        </a>--%>
+        <a href="/teacher/student-attendance/student-attendance-history" class="nav-button">
+            <i class="fas fa-calendar-alt"></i><span>Attendance History</span>
+        </a>
 
         <a href="<%= request.getContextPath() %>/teachers/teacher-profile" class="nav-button">
             <i class="fas fa-user-tie"></i><span>About me</span>

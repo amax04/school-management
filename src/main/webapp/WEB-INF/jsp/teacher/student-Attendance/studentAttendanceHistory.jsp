@@ -52,11 +52,28 @@
             font-size: 14px;
             margin-bottom: 10px;
         }
+        img.student-photo {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .student-photo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
 
-<h2>Past Attendance History</h2>
+<h2>Student Attendance History</h2>
 
 <!-- Display teacherId (debugging purposes or if needed on the page) -->
 <p class="debug">Teacher ID from Session: <%= session.getAttribute("teacherId") %></p>
@@ -85,10 +102,11 @@
     <table>
         <thead>
         <tr>
+            <th>Photo</th> <!-- New Column for Student Photo -->
+            <th>Student ID</th>
             <th>Date</th>
             <th>Grade</th>
             <th>Section</th>
-            <th>Student ID</th>
             <th>Status</th>
         </tr>
         </thead>
@@ -96,10 +114,25 @@
         <c:forEach var="record" items="${history}">
             <c:forEach var="studentAttendance" items="${record.attendancelist}">
                 <tr>
+                    <!-- Display Student Photo or First Letter -->
+                    <td>
+                        <c:choose>
+                            <c:when test="${not empty studentAttendance.student.photoPath}">
+                                <img src="${studentAttendance.student.photoPath}" alt="Student Photo" class="student-photo" />
+                            </c:when>
+                            <c:otherwise>
+                                <!-- Show the first letter of the student's name -->
+                                <div class="student-photo-placeholder">
+                                        ${fn:substring(studentAttendance.student.name, 0, 1)}
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${studentAttendance.studentId}</td>
                     <td>${record.date}</td>
                     <td>${record.grade}</td>
                     <td>${record.section}</td>
-                    <td>${studentAttendance.studentId}</td>
+
                     <td>${studentAttendance.status}</td>
                 </tr>
             </c:forEach>

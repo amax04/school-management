@@ -99,7 +99,7 @@
     <div class="mt-4 d-flex flex-wrap gap-2">
         <button class="btn btn-info text-white" id="load-students">Load Students</button>
         <button class="btn btn-success" id="mark-all-present">Mark All Present</button>
-<%--        <a href="/teacher/student-attendance/student-attendance-history" class="btn btn-outline-primary">📅 View Past Attendance</a>--%>
+        <a href="/teacher/student-attendance/student-attendance-history" class="btn btn-outline-primary">📅 View Past Attendance</a>
         <input type="text" id="search" placeholder="Search by name..." class="form-control w-100 w-md-auto">
     </div>
 

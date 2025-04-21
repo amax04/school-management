@@ -14,7 +14,7 @@ public interface StudentAttendanceService {
 
     List<AttendanceRequest> getAttendanceHistoryByTeacher(Long teacherId);
 
-    List<AttendanceMeta> getFilteredHistory(Long teacherId, String grade, String section, LocalDate date);
+    List<AttendanceMeta> getFilteredStudentAttendanceHistory(Long teacherId, String grade, String section, LocalDate date);
     double getTodaysAttendancePercentage(Long teacherId);
     int getTotalStudentsAssignedToTeacher(Long teacherId);
     int getTotalClassesAssignedToTeacher(Long teacherId);
@@ -23,4 +23,7 @@ public interface StudentAttendanceService {
 
     public boolean existsByDateGradeSection(LocalDate date, String grade, String section);
     public List<AttendanceRequest> getAllAttendanceHistory(); // Like teacher’s history but for all
+
+    List<AttendanceMeta> getAllAttendanceMetaByTeacher(Long teacherId);
+
 }

@@ -25,7 +25,7 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
     @Override
     public void saveAttendance(AttendanceRequest request, Long teacherId, String recordedBy) {
-        // ✅ First, save attendance metadata
+        // First, save attendance metadata
         AttendanceMeta meta = new AttendanceMeta(
                 request.getDate(),
                 request.getGrade(),
@@ -36,7 +36,7 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
         List<AttendanceRequest.AttendanceEntry> entries = request.getAttendancelist();
 
-        // ✅ Avoid NullPointerException
+        // Avoid NullPointerException
         if (entries != null && !entries.isEmpty()) {
             for (AttendanceRequest.AttendanceEntry entry : entries) {
                 StudentAttendance studentAttendance = new StudentAttendance();
@@ -47,13 +47,19 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
                 studentAttendance.setSection(request.getSection());
                 studentAttendance.setTeacherId(teacherId);
                 studentAttendance.setRecordedBy(recordedBy);
-                studentAttendance.setAttendanceMeta(meta); // ✅ Now meta is available
+                studentAttendance.setAttendanceMeta(meta); // Now meta is available
+
+                // Add the StudentAttendance to AttendanceMeta (bidirectional relationship)
+                meta.addStudentAttendance(studentAttendance);
+
+                // Save the StudentAttendance entity
                 studentAttendanceRepository.save(studentAttendance);
             }
         } else {
             System.out.println("No student attendance entries found. Skipping studentAttendance save.");
         }
     }
+
 
     @Override
     public boolean existsByDateGradeSectionTeacher(LocalDate date, String grade, String section, Long teacherId) {
@@ -88,14 +94,20 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
     }
 
     @Override
-    public List<AttendanceMeta> getFilteredHistory(Long teacherId, String grade, String section, LocalDate date) {
-        List<AttendanceMeta> allRecords = attendanceMetaRepository.findByTeacherId(teacherId);
-
-        return allRecords.stream()
-                .filter(meta -> grade == null || meta.getGrade().equalsIgnoreCase(grade))
-                .filter(meta -> section == null || meta.getSection().equalsIgnoreCase(section))
-                .filter(meta -> date == null || meta.getDate().equals(date))
-                .collect(Collectors.toList());
+    public List<AttendanceMeta> getFilteredStudentAttendanceHistory(Long teacherId, String grade, String section, LocalDate date) {
+        if (date != null && (grade == null || grade.isEmpty()) && (section == null || section.isEmpty())) {
+            // Filter by only date and teacherId
+            return attendanceMetaRepository.findByTeacherIdAndDate(teacherId, date);
+        } else if (grade != null && !grade.isEmpty() && section != null && !section.isEmpty() && date != null) {
+            return attendanceMetaRepository.findByTeacherIdAndGradeAndSectionAndDate(teacherId, grade, section, date);
+        } else if (grade != null && !grade.isEmpty() && section != null && !section.isEmpty()) {
+            return attendanceMetaRepository.findByTeacherIdAndGradeAndSection(teacherId, grade, section);
+        } else if (grade != null && !grade.isEmpty()) {
+            return attendanceMetaRepository.findByTeacherIdAndGrade(teacherId, grade);
+        } else if (section != null && !section.isEmpty()) {
+            return attendanceMetaRepository.findByTeacherIdAndSection(teacherId, section);
+        }
+        return attendanceMetaRepository.findByTeacherId(teacherId);
     }
 
     @Override
@@ -168,6 +180,11 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
         if (totalMarked == 0) return 0.0;
         return (totalPresent * 100.0) / totalMarked;
+    }
+
+    @Override
+    public List<AttendanceMeta> getAllAttendanceMetaByTeacher(Long teacherId) {
+        return attendanceMetaRepository.findByTeacherId(teacherId);
     }
 
 }

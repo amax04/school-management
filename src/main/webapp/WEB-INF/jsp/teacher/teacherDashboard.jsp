@@ -266,9 +266,9 @@
         <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>'">
             Mark Attendance
         </div>
-<%--        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history'">--%>
-<%--            View Records--%>
-<%--        </div>--%>
+        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history'">
+            View Records
+        </div>
         <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teachers/teacher-profile'">
             Manage Profile
         </div>
