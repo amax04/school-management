@@ -8,7 +8,7 @@
     <title>Filter Students</title>
     <style>
         body {
-            margin-left: 250px; /* adjust to match your sidebar width */
+            margin-left: 250px;
             padding: 2rem;
             font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
@@ -64,6 +64,9 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         th, td {
@@ -81,7 +84,26 @@
             background-color: var(--row-alt);
         }
 
-        /* Responsive */
+        td img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .initial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+        }
+
         @media (max-width: 768px) {
             form {
                 flex-direction: column;
@@ -124,10 +146,11 @@
     </style>
 </head>
 <body class="<%= request.getSession().getAttribute("darkMode") != null && (Boolean)request.getSession().getAttribute("darkMode") ? "dark-mode" : "" %>">
+
 <div class="container">
     <h2>Filter Students by Grade and Section</h2>
 
-    <form action="teacherStudents" method="post">
+    <form action="teacherStudents" method="post" autocomplete="off">
         <select name="grade" required>
             <option value="" disabled selected>Select Grade</option>
             <c:forEach var="g" items="${grades}">
@@ -149,23 +172,46 @@
         <table>
             <thead>
             <tr>
-                <th>Student Name</th>
+                <th>Img</th>
                 <th>Roll Number</th>
+                <th>Student Name</th>
                 <th>Grade</th>
                 <th>Section</th>
+                <th>Father</th>
+                <th>Email</th>
+                <th>Contact No</th>
+<%--                <th> </th>--%>
             </tr>
             </thead>
             <tbody>
             <c:forEach var="student" items="${students}">
                 <tr>
-                    <td>${student.name}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${not empty student.photoPath}">
+                                <img src="${pageContext.request.contextPath}${student.photoPath}" alt="Image" />
+                            </c:when>
+                            <c:otherwise>
+                                <div class="initial-avatar">${student.name.substring(0,1)}</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                     <td>${student.rollNo}</td>
+                    <td>${student.name}</td>
                     <td>${student.grade}</td>
                     <td>${student.section}</td>
+                    <td>${student.fatherName}</td>
+                    <td>${student.email}</td>
+                    <td>${student.phoneNo}</td>
+<%--                    <td><p>Photo Path: ${pageContext.request.contextPath}${student.photoPath}</p></td>--%>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+    </c:if>
+
+    <c:if test="${empty students}">
+        <p style="text-align:center; margin-top: 2rem;">No students found for the selected grade and section.</p>
     </c:if>
 </div>
 </body>

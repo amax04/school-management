@@ -157,6 +157,7 @@ import java.util.List;
                                             Model model) {
 
             Long teacherId = (Long) session.getAttribute("teacherId");
+            List<Student> students = studentService.getStudentsByGradeAndSection(grade, section);
 
             if (teacherId == null) {
                 model.addAttribute("error", "Teacher ID not found in session.");
@@ -176,6 +177,7 @@ import java.util.List;
             model.addAttribute("grade", grade);
             model.addAttribute("section", section);
             model.addAttribute("date", date);
+            model.addAttribute("students", students);
 
             return "teacher/student-Attendance/studentAttendanceHistory"; // Your JSP page
         }

@@ -197,10 +197,12 @@
                 <tr>
                     <th>Photo</th>
                     <th>Student ID</th>
+                    <th>Name</th>
                     <th>Date</th>
                     <th>Grade</th>
                     <th>Section</th>
                     <th>Status</th>
+<%--                    <th> </th>--%>
                 </tr>
                 </thead>
                 <tbody>
@@ -209,21 +211,30 @@
                         <tr>
                             <td>
                                 <c:choose>
-                                    <c:when test="${not empty studentAttendance.student.photoPath}">
-                                        <img src="${studentAttendance.student.photoPath}" alt="Photo" class="student-photo" />
+                                    <c:when test="${not empty studentAttendance.student.photoPath
+            and not fn:contains(studentAttendance.student.photoPath, 'placeholder')}">
+                                        <img src="${pageContext.request.contextPath}${studentAttendance.student.photoPath}" alt="Photo" class="student-photo-placeholder" />
                                     </c:when>
                                     <c:otherwise>
                                         <div class="student-photo-placeholder">
-                                                ${fn:substring(studentAttendance.student.name, 0, 1)}
+                                            <c:choose>
+                                                <c:when test="${not empty studentAttendance.student.name}">
+                                                    <c:out value="${fn:substring(studentAttendance.student.name, 0, 1)}" />
+                                                </c:when>
+                                                <c:otherwise>-</c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
+
                             <td>${studentAttendance.studentId}</td>
+                            <td>${studentAttendance.student.name}</td>
                             <td>${record.date}</td>
                             <td>${record.grade}</td>
                             <td>${record.section}</td>
                             <td>${studentAttendance.status}</td>
+<%--                            <td><td><p>Photo Path: ${pageContext.request.contextPath}${studentAttendance.student.photoPath}</p></td></td>--%>
                         </tr>
                     </c:forEach>
                 </c:forEach>
