@@ -4,6 +4,8 @@ import com.example.school_management.TeacherFeatures.entity.Teacher;
 import com.example.school_management.TeacherFeatures.repository.TeacherRepository;
 import com.example.school_management.TeacherFeatures.service.StudentAttendanceService;
 import com.example.school_management.TeacherFeatures.service.TeacherService;
+import com.example.school_management.entity.Student;
+import com.example.school_management.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class TeacherController {
 
     @Autowired
     private StudentAttendanceService studentAttendanceService;
+
+    @Autowired
+    private StudentService studentService;
 
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
@@ -179,11 +184,36 @@ public class TeacherController {
             model.addAttribute("teacher", teacher);
         } else {
             // Optionally, you can return an error page if the teacher is not found
-            model.addAttribute("errorMessage", "Teacher not found.");
+            model.addAttribute("errorMessage", "Teacher not kfound.");
             return "error";  // You can define an error.jsp page to handle this
         }
 
         // Return the teacher profile page
         return "teacher/teacherProfile";  // Return the name of the JSP page
+    }
+
+    @GetMapping("/teacherStudents")
+    public String loadTeacherStudentsPage(Model model) {
+        model.addAttribute("grades", studentService.getAllGrades());
+        model.addAttribute("sections", studentService.getAllSections());
+        return "teacher/teacherStudents"; // JSP page name
+    }
+
+    // Handle form submission
+    @PostMapping("/teacherStudents")
+    public String TeacherStudents(
+            @RequestParam String grade,
+            @RequestParam String section,
+            Model model) {
+
+        List<Student> students = studentService.getStudentsByGradeAndSection(grade, section);
+
+        model.addAttribute("grades", studentService.getAllGrades());
+        model.addAttribute("sections", studentService.getAllSections());
+        model.addAttribute("selectedGrade", grade);
+        model.addAttribute("selectedSection", section);
+        model.addAttribute("students", students);
+
+        return "teacher/teacherStudents";
     }
 }

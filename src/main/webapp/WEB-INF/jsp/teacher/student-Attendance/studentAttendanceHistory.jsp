@@ -1,147 +1,240 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> <!-- Added for fn:length -->
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>Attendance History</title>
+    <title>Student Attendance History</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f4f6f9;
             margin: 0;
-            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f3f4f6;
+            color: #2c3e50;
         }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 30px 40px;
+            transition: margin-left 0.3s ease;
+        }
+
         h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1f2937;
         }
+
+        .filter-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-form input[type="text"],
+        .filter-form input[type="date"] {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-form input[type="submit"] {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .filter-form input[type="submit"]:hover {
+            background: #1d4ed8;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            overflow-x: auto;
+        }
+
         table {
-            width: 90%;
-            margin: auto;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            font-size: 14px;
         }
-        th, td {
+
+        th {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 14px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        td {
+            background-color: #f9fafb;
             padding: 12px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e5e7eb;
+            border-radius: 6px;
         }
-        th {
-            background-color: #2c3e50;
-            color: white;
+
+        tr:hover td {
+            background-color: #f1f5f9;
         }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .back-btn {
-            display: block;
-            width: 120px;
-            margin: 20px auto;
-            padding: 10px;
-            text-align: center;
-            background: #3498db;
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-        .debug {
-            text-align: center;
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        img.student-photo {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
+
+        .student-photo {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
         }
+
         .student-photo-placeholder {
-            width: 50px;
-            height: 50px;
-            background-color: #3498db;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3b82f6;
             color: white;
-            font-size: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 50%;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-btn {
+            margin-top: 30px;
+            display: inline-block;
+            background-color: #374151;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #1f2937;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .filter-form {
+                flex-direction: column;
+            }
+
+            table, thead, tbody, th, td, tr {
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
-<h2>Student Attendance History</h2>
-
-<!-- Display teacherId (debugging purposes or if needed on the page) -->
-<p class="debug">Teacher ID from Session: <%= session.getAttribute("teacherId") %></p>
-
-<!-- Display history size for debugging -->
-<p class="debug">History size: ${fn:length(history)}</p>
+<%@ include file="../sidebar.jsp" %>
 
 <%
     Long teacherIdLong = (Long) session.getAttribute("teacherId");
-    String teacherId = teacherIdLong != null ? String.valueOf(teacherIdLong) : "";
+    String teacherIdStr = teacherIdLong != null ? String.valueOf(teacherIdLong) : "";
     String contextPath = request.getContextPath();
 %>
-<form method="get" action="<%= contextPath %>/teacher/student-attendance/student-attendance-history" style="text-align:center; margin-bottom: 20px;">
-    <input type="hidden" name="teacherId" value="<%= teacherId %>" />
-    Grade: <input type="text" name="grade" placeholder="e.g. 10" value="<%= request.getParameter("grade") != null ? request.getParameter("grade") : "" %>" />
-    Section: <input type="text" name="section" placeholder="e.g. A" value="<%= request.getParameter("section") != null ? request.getParameter("section") : "" %>" />
-    Date: <input type="date" name="date" value="<%= request.getParameter("date") != null ? request.getParameter("date") : "" %>" />
-    <input type="submit" value="Filter" style="padding: 5px 10px; margin-left: 10px;" />
-</form>
 
-<c:if test="${empty history}">
-    <p style="text-align:center; color:gray;">No attendance records found.</p>
-</c:if>
+<div class="main-content">
+    <h2>Student Attendance History</h2>
 
-<c:if test="${not empty history}">
-    <table>
-        <thead>
-        <tr>
-            <th>Photo</th> <!-- New Column for Student Photo -->
-            <th>Student ID</th>
-            <th>Date</th>
-            <th>Grade</th>
-            <th>Section</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="record" items="${history}">
-            <c:forEach var="studentAttendance" items="${record.attendancelist}">
+    <!-- Filter Form -->
+    <form class="filter-form" method="get" action="<%= contextPath %>/teacher/student-attendance/student-attendance-history">
+        <input type="hidden" name="teacherId" value="<%= teacherIdStr %>" />
+        <input type="text" name="grade" placeholder="Grade" value="<%= request.getParameter("grade") != null ? request.getParameter("grade") : "" %>" />
+        <input type="text" name="section" placeholder="Section" value="<%= request.getParameter("section") != null ? request.getParameter("section") : "" %>" />
+        <input type="date" name="date" value="<%= request.getParameter("date") != null ? request.getParameter("date") : "" %>" />
+        <input type="submit" value="Filter" />
+    </form>
+
+    <!-- Attendance History Table -->
+    <div class="card">
+        <c:if test="${empty history}">
+            <p class="no-data">No attendance records found.</p>
+        </c:if>
+
+        <c:if test="${not empty history}">
+            <table>
+                <thead>
                 <tr>
-                    <!-- Display Student Photo or First Letter -->
-                    <td>
-                        <c:choose>
-                            <c:when test="${not empty studentAttendance.student.photoPath}">
-                                <img src="${studentAttendance.student.photoPath}" alt="Student Photo" class="student-photo" />
-                            </c:when>
-                            <c:otherwise>
-                                <!-- Show the first letter of the student's name -->
-                                <div class="student-photo-placeholder">
-                                        ${fn:substring(studentAttendance.student.name, 0, 1)}
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>${studentAttendance.studentId}</td>
-                    <td>${record.date}</td>
-                    <td>${record.grade}</td>
-                    <td>${record.section}</td>
-
-                    <td>${studentAttendance.status}</td>
+                    <th>Photo</th>
+                    <th>Student ID</th>
+                    <th>Date</th>
+                    <th>Grade</th>
+                    <th>Section</th>
+                    <th>Status</th>
                 </tr>
-            </c:forEach>
-        </c:forEach>
-        </tbody>
-    </table>
-</c:if>
+                </thead>
+                <tbody>
+                <c:forEach var="record" items="${history}">
+                    <c:forEach var="studentAttendance" items="${record.attendancelist}">
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty studentAttendance.student.photoPath}">
+                                        <img src="${studentAttendance.student.photoPath}" alt="Photo" class="student-photo" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="student-photo-placeholder">
+                                                ${fn:substring(studentAttendance.student.name, 0, 1)}
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${studentAttendance.studentId}</td>
+                            <td>${record.date}</td>
+                            <td>${record.grade}</td>
+                            <td>${record.section}</td>
+                            <td>${studentAttendance.status}</td>
+                        </tr>
+                    </c:forEach>
+                </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+    </div>
 
-<a href="/teacher/student-attendance/view" class="back-btn">← Go Back</a>
+    <!-- Back Button -->
+    <a href="/teacher/student-attendance/view" class="back-btn">← Back to Attendance</a>
+</div>
 
 </body>
 </html>

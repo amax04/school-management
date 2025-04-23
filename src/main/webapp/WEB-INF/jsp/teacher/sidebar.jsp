@@ -90,7 +90,7 @@
     }
 
     #nav-bar {
-        position: absolute;
+        position: fixed;
         left: 1vw;
         top: 1vw;
         height: calc(100% - 2vw);
@@ -429,9 +429,9 @@
             <i class="fas fa-home"></i><span>Dashboard</span>
         </a>
 
-<%--        <a href="<%= request.getContextPath() %>/teachers" class="nav-button">--%>
-<%--            <i class="fas fa-users"></i><span>Students</span>--%>
-<%--        </a>--%>
+        <a href="${pageContext.request.contextPath}/teachers/teacherStudents" class="nav-button">
+            <i class="fas fa-user-graduate"></i><span>Students</span>
+        </a>
 
         <a href="<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>" class="nav-button">
             <i class="fas fa-check-square"></i><span>Attendance</span>
@@ -445,9 +445,9 @@
             <i class="fas fa-user-tie"></i><span>About me</span>
         </a>
 
-        <a href="/logout" class="nav-button">
-            <i class="fas fa-sign-out-alt"></i><span>Logout</span>
-        </a>
+<%--        <a href="/logout" class="nav-button">--%>
+<%--            <i class="fas fa-sign-out-alt"></i><span>Logout</span>--%>
+<%--        </a>--%>
 
     </div>
     <input id="nav-footer-toggle" type="checkbox"/>
@@ -470,8 +470,8 @@
         </div>
 
         <div id="nav-footer-content">
-            <a href="/logout" class="nav-button log-out">
-                <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+            <a href="/logout" class="nav-button log-out" onclick="return confirm('Are you sure you want to log out?');">
+            <i class="fas fa-sign-out-alt"></i><span>Logout</span>
             </a>
         </div>
     </div>
