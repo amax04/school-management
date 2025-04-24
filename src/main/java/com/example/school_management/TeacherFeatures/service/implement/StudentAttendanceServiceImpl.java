@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -185,6 +186,15 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
     @Override
     public List<AttendanceMeta> getAllAttendanceMetaByTeacher(Long teacherId) {
         return attendanceMetaRepository.findByTeacherId(teacherId);
+    }
+
+    @Override
+    public List<AttendanceMeta> getLatestStudentAttendanceByTeacher(Long teacherId) {
+        LocalDate latestDate = attendanceMetaRepository.findLatestAttendanceDateByTeacherId(teacherId);
+        if (latestDate != null) {
+            return attendanceMetaRepository.findByTeacherIdAndDate(teacherId, latestDate);
+        }
+        return Collections.emptyList();
     }
 
 }

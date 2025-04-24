@@ -38,4 +38,7 @@ public interface AttendanceMetaRepository extends JpaRepository<AttendanceMeta, 
     List<AttendanceMeta> findByTeacherIdAndGradeAndSection(Long teacherId, String grade, String section);
     List<AttendanceMeta> findByTeacherIdAndGradeAndSectionAndDate(Long teacherId, String grade, String section, LocalDate date);
 
+    @Query("SELECT MAX(a.date) FROM AttendanceMeta a WHERE a.teacherId = :teacherId")
+    LocalDate findLatestAttendanceDateByTeacherId(@Param("teacherId") Long teacherId);
+
 }

@@ -20,6 +20,8 @@ public interface StudentAttendanceService {
     int getTotalClassesAssignedToTeacher(Long teacherId);
     double getOverallAttendanceRate(Long teacherId);
 
+    // In AttendanceService
+    List<AttendanceMeta> getLatestStudentAttendanceByTeacher(Long teacherId);
 
     public boolean existsByDateGradeSection(LocalDate date, String grade, String section);
     public List<AttendanceRequest> getAllAttendanceHistory(); // Like teacher’s history but for all

@@ -172,7 +172,7 @@
         <table>
             <thead>
             <tr>
-                <th>Img</th>
+<%--                <th>Img</th>--%>
                 <th>Roll Number</th>
                 <th>Student Name</th>
                 <th>Grade</th>
@@ -186,16 +186,16 @@
             <tbody>
             <c:forEach var="student" items="${students}">
                 <tr>
-                    <td>
-                        <c:choose>
-                            <c:when test="${not empty student.photoPath}">
-                                <img src="${pageContext.request.contextPath}${student.photoPath}" alt="Image" />
-                            </c:when>
-                            <c:otherwise>
-                                <div class="initial-avatar">${student.name.substring(0,1)}</div>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
+<%--                    <td>--%>
+<%--                        <c:choose>--%>
+<%--                            <c:when test="${not empty student.photoPath}">--%>
+<%--                                <img src="${pageContext.request.contextPath}${student.photoPath}" alt="Image" />--%>
+<%--                            </c:when>--%>
+<%--                            <c:otherwise>--%>
+<%--                                <div class="initial-avatar">${student.name.substring(0,1)}</div>--%>
+<%--                            </c:otherwise>--%>
+<%--                        </c:choose>--%>
+<%--                    </td>--%>
                     <td>${student.rollNo}</td>
                     <td>${student.name}</td>
                     <td>${student.grade}</td>

@@ -157,20 +157,24 @@ import java.util.List;
                                             Model model) {
 
             Long teacherId = (Long) session.getAttribute("teacherId");
-            List<Student> students = studentService.getStudentsByGradeAndSection(grade, section);
 
             if (teacherId == null) {
                 model.addAttribute("error", "Teacher ID not found in session.");
-                return "login/login"; // Or wherever you want to redirect on error
+                return "login/login";
             }
 
+            List<Student> students = studentService.getStudentsByGradeAndSection(grade, section);
+
             List<AttendanceMeta> history;
+
             if ((grade != null && !grade.isEmpty()) ||
                     (section != null && !section.isEmpty()) ||
                     date != null) {
+                // Filtered attendance based on grade, section or date
                 history = attendanceService.getFilteredStudentAttendanceHistory(teacherId, grade, section, date);
             } else {
-                history = attendanceService.getAllAttendanceMetaByTeacher(teacherId); // You need to create this
+                // Show latest attendance if nothing is selected
+                history = attendanceService.getLatestStudentAttendanceByTeacher(teacherId);
             }
 
             model.addAttribute("history", history);
@@ -179,7 +183,8 @@ import java.util.List;
             model.addAttribute("date", date);
             model.addAttribute("students", students);
 
-            return "teacher/student-Attendance/studentAttendanceHistory"; // Your JSP page
+            return "teacher/student-Attendance/studentAttendanceHistory";
         }
+
 
     }

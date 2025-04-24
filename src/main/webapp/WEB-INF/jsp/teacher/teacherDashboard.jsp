@@ -233,11 +233,11 @@
     <!-- Top Bar -->
     <div class="top-bar fade-in">
         <h2>Teacher Dashboard</h2>
-        <label class="theme-switch">
-            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">
-            <span class="slider"></span>
-            <span class="label-text">Dark Mode</span>
-        </label>
+<%--        <label class="theme-switch">--%>
+<%--            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">--%>
+<%--            <span class="slider"></span>--%>
+<%--            <span class="label-text">Dark Mode</span>--%>
+<%--        </label>--%>
     </div>
 
     <!-- Cards -->
