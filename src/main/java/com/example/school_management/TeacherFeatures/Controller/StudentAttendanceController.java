@@ -13,6 +13,7 @@ import com.example.school_management.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -149,27 +150,41 @@ import java.util.List;
         }
 
         @GetMapping("/student-attendance-history")
-        public String showAttendanceHistory(HttpSession session, Principal principal, Model model) {
-            Long teacherId = (Long) session.getAttribute("roleId");
+        public String showAttendanceHistory(@RequestParam(required = false) String grade,
+                                            @RequestParam(required = false) String section,
+                                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                            HttpSession session,
+                                            Model model) {
 
-            // Optionally get from Principal if needed
-            if (teacherId == null && principal != null) {
-                String username = principal.getName();
-                // Assuming you have a method to get teacher by username:
-                Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
-                if (teacher != null) {
-                    teacherId = teacher.getId();
-                    session.setAttribute("teacherId", teacherId);
-                }
-            }
+            Long teacherId = (Long) session.getAttribute("teacherId");
 
             if (teacherId == null) {
-                model.addAttribute("error", "Unable to identify teacher.");
-                return "login/login"; // or your custom error page
+                model.addAttribute("error", "Teacher ID not found in session.");
+                return "login/login";
             }
 
-            List<AttendanceRequest> history = attendanceService.getAttendanceHistoryByTeacher(teacherId);
+            List<Student> students = studentService.getStudentsByGradeAndSection(grade, section);
+
+            List<AttendanceMeta> history;
+
+            if ((grade != null && !grade.isEmpty()) ||
+                    (section != null && !section.isEmpty()) ||
+                    date != null) {
+                // Filtered attendance based on grade, section or date
+                history = attendanceService.getFilteredStudentAttendanceHistory(teacherId, grade, section, date);
+            } else {
+                // Show latest attendance if nothing is selected
+                history = attendanceService.getLatestStudentAttendanceByTeacher(teacherId);
+            }
+
             model.addAttribute("history", history);
-            return "teacher/student/studentAttendanceHistory";
+            model.addAttribute("grade", grade);
+            model.addAttribute("section", section);
+            model.addAttribute("date", date);
+            model.addAttribute("students", students);
+
+            return "teacher/student-Attendance/studentAttendanceHistory";
         }
+
+
     }

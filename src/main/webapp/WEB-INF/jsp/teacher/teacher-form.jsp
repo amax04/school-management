@@ -112,10 +112,10 @@
                             </form:select>
                             <form:errors path="gender" class="text-danger"/>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Active Status</label>
-                            <form:checkbox path="isActive" class="form-check-input"/>
-                        </div>
+<%--                        <div class="col-md-6 mb-3">--%>
+<%--                            <label class="form-label">Active Status</label>--%>
+<%--                            <form:checkbox path="isActive" class="form-check-input"/>--%>
+<%--                        </div>--%>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-success px-5 py-2">${teacher.id == null ? 'Add' : 'Update'}</button>

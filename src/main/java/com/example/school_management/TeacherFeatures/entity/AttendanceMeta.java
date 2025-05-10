@@ -2,6 +2,8 @@ package com.example.school_management.TeacherFeatures.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "attendance_meta")
@@ -15,6 +17,9 @@ public class AttendanceMeta {
     private String grade;
     private String section;
     private Long teacherId;
+
+    @OneToMany(mappedBy = "attendanceMeta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StudentAttendance> attendancelist;
 
     public AttendanceMeta() {}
 
@@ -40,4 +45,19 @@ public class AttendanceMeta {
 
     public Long getTeacherId() { return teacherId; }
     public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
+
+    public List<StudentAttendance> getAttendancelist() {
+        return attendancelist;
+    }
+    public void setAttendancelist(List<StudentAttendance> attendancelist) {
+        this.attendancelist = attendancelist;
+    }
+
+    public void addStudentAttendance(StudentAttendance attendance) {
+        if (this.attendancelist == null) {
+            this.attendancelist = new ArrayList<>();
+        }
+        this.attendancelist.add(attendance);
+        attendance.setAttendanceMeta(this); // Ensure bidirectional relationship
+    }
 }

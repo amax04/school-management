@@ -12,64 +12,106 @@
 
     <style>
         body {
-            background: linear-gradient(to right, #f0f4f8, #d9e2ec);
+            background: linear-gradient(to right, #e0f7fa, #ffffff);
             font-family: 'Segoe UI', sans-serif;
         }
 
         .profile-container {
-            max-width: 900px;
-            margin: 50px auto;
-            background-color: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 950px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         .profile-photo {
-            width: 150px;
-            height: 150px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+        }
+
+        #fallback {
+            display: none;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            font-size: 50px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
 
         .profile-title {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             color: #007bff;
+            margin-top: 15px;
         }
 
         .profile-subtitle {
             font-size: 18px;
             color: #6c757d;
+            margin-bottom: 25px;
         }
 
-        .info-title {
-            color: #343a40;
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        .info-table th,
+        .info-table td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-table th {
+            width: 30%;
+            background-color: #f8f9fa;
+            color: #495057;
             font-weight: 600;
         }
 
-        .info-value {
-            color: #555;
+        .info-table td {
+            color: #212529;
         }
 
-        .info-section {
-            padding: 20px 0;
-            border-top: 1px solid #dee2e6;
+        .btn-back,
+        .btn-warning {
+            width: 200px;
+            font-weight: 500;
         }
 
-        .btn-back {
-            margin-top: 30px;
+        .action-buttons {
+            gap: 20px;
         }
 
-        @media(max-width: 576px) {
-            .profile-photo {
-                width: 100px;
-                height: 100px;
+        @media (max-width: 768px) {
+            .profile-title {
+                font-size: 28px;
             }
 
-            .profile-title {
-                font-size: 24px;
+            .profile-photo,
+            #fallback {
+                width: 120px;
+                height: 120px;
+            }
+
+            #fallback {
+                font-size: 40px;
+            }
+
+            .info-table th,
+            .info-table td {
+                padding: 10px 14px;
             }
         }
     </style>
@@ -77,70 +119,59 @@
 <body>
 
 <div class="profile-container text-center">
-    <img src="${teacher.photoUrl}" class="profile-photo mb-3"
+    <img src="${teacher.photoUrl}" class="profile-photo"
          onerror="this.style.display='none'; document.getElementById('fallback').style.display='flex';" alt="Profile Photo">
 
-    <div id="fallback" class="profile-photo mb-3 mx-auto" style="display: none; background-color: #007bff; color: white; font-size: 40px; align-items: center; justify-content: center; display: none;">
+    <div id="fallback" style="display: none;">
         <%= ((String) session.getAttribute("teacherName")).substring(0, 1).toUpperCase() %>
     </div>
 
     <h2 class="profile-title">${teacher.name}</h2>
     <p class="profile-subtitle">${teacher.specialization}</p>
 
-    <div class="row info-section text-start">
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Email</div>
-            <div class="info-value">${teacher.email}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Phone</div>
-            <div class="info-value">${teacher.phone}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Alt Phone</div>
-            <div class="info-value">${teacher.altPhoneNo}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Experience</div>
-            <div class="info-value">${teacher.experience} years</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Qualification</div>
-            <div class="info-value">${teacher.qualification}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Date of Birth</div>
-            <div class="info-value">${teacher.dob}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Date of Joining</div>
-            <div class="info-value">${teacher.doj}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Address</div>
-            <div class="info-value">${teacher.address}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="info-title">Active</div>
-            <div class="info-value">${teacher.isActive ? 'Yes' : 'No'}</div>
-        </div>
+    <table class="table table-bordered info-table mt-4">
+        <tr>
+            <th>Email</th>
+            <td>${teacher.email}</td>
+        </tr>
+        <tr>
+            <th>Phone</th>
+            <td>${teacher.phone}</td>
+        </tr>
+        <tr>
+            <th>Alt Phone</th>
+            <td>${teacher.altPhoneNo}</td>
+        </tr>
+        <tr>
+            <th>Experience</th>
+            <td>${teacher.experience} years</td>
+        </tr>
+        <tr>
+            <th>Qualification</th>
+            <td>${teacher.qualification}</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td>${teacher.dob}</td>
+        </tr>
+        <tr>
+            <th>Date of Joining</th>
+            <td>${teacher.doj}</td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td>${teacher.address}</td>
+        </tr>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4 action-buttons flex-wrap">
+        <a href="${pageContext.request.contextPath}/teachers/edit/${teacher.id}" class="btn btn-warning me-3 mb-2">
+            <i class="fas fa-edit me-1"></i> Edit Profile
+        </a>
+        <a href="${pageContext.request.contextPath}/teachers/dashboard" class="btn btn-secondary btn-back mb-2">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
     </div>
-
-    <!-- Actions -->
-    <div class="text-center my-4">
-        <div>
-            <a href="${pageContext.request.contextPath}/teachers/edit/${teacher.id}" class="btn btn-warning">
-                Edit Profile
-            </a>
-        </div>
-
-        <div>
-            <a href="${pageContext.request.contextPath}/teachers/dashboard" class="btn btn-secondary rounded-pill btn-back">
-                <i class="fas fa-arrow-left me-2"></i>Back to List
-            </a>
-        </div>
-    </div>
-
 </div>
 
 </body>

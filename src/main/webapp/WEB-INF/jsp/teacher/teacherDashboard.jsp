@@ -233,11 +233,11 @@
     <!-- Top Bar -->
     <div class="top-bar fade-in">
         <h2>Teacher Dashboard</h2>
-        <label class="theme-switch">
-            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">
-            <span class="slider"></span>
-            <span class="label-text">Dark Mode</span>
-        </label>
+<%--        <label class="theme-switch">--%>
+<%--            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">--%>
+<%--            <span class="slider"></span>--%>
+<%--            <span class="label-text">Dark Mode</span>--%>
+<%--        </label>--%>
     </div>
 
     <!-- Cards -->
@@ -266,9 +266,9 @@
         <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/view?teacherId=<%= session.getAttribute("teacherId") %>'">
             Mark Attendance
         </div>
-<%--        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history'">--%>
-<%--            View Records--%>
-<%--        </div>--%>
+        <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teacher/student-attendance/student-attendance-history'">
+            View Records
+        </div>
         <div class="action float-hover" onclick="location.href='<%= request.getContextPath() %>/teachers/teacher-profile'">
             Manage Profile
         </div>
